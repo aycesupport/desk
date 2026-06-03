@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Desk Exercise Timer</title>
+
+<!-- PWA Meta Tags -->
+<meta name="application-name" content="DeskFit">
+<meta name="description" content="Stay active at your desk with timed exercise breaks and motivational quotes.">
+<meta name="theme-color" content="#0e0e0f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="DeskFit">
+<meta name="msapplication-TileColor" content="#0e0e0f">
+
+<!-- PWA Manifest (inline data URI — works from a single file) -->
+<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22DeskFit%20-%20Desk%20Exercise%20Timer%22%2C%22short_name%22%3A%22DeskFit%22%2C%22description%22%3A%22Stay%20active%20at%20your%20desk%20with%20timed%20exercise%20breaks%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230e0e0f%22%2C%22theme_color%22%3A%22%230e0e0f%22%2C%22orientation%22%3A%22portrait%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%2520xmlns%253D%2527http%253A%252F%252Fwww.w3.org%252F2000%252Fsvg%2527%2520viewBox%253D%25270%25200%2520192%2520192%2527%253E%253Crect%2520width%253D%2527192%2527%2520height%253D%2527192%2527%2520fill%253D%2527%25230e0e0f%2527%2520rx%253D%252740%2527%252F%253E%253Ctext%2520x%253D%252796%2527%2520y%253D%2527130%2527%2520font-size%253D%2527110%2527%2520text-anchor%253D%2527middle%2527%253E%25F0%259F%258F%258B%25EF%25B8%258F%253C%252Ftext%253E%253C%252Fsvg%253E%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%2C%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%2520xmlns%253D%2527http%253A%252F%252Fwww.w3.org%252F2000%252Fsvg%2527%2520viewBox%253D%25270%25200%2520512%2520512%2527%253E%253Crect%2520width%253D%2527512%2527%2520height%253D%2527512%2527%2520fill%253D%2527%25230e0e0f%2527%2520rx%253D%2527100%2527%252F%253E%253Ctext%2520x%253D%2527256%2527%2520y%253D%2527350%2527%2520font-size%253D%2527300%2527%2520text-anchor%253D%2527middle%2527%253E%25F0%259F%258F%258B%25EF%25B8%258F%253C%252Ftext%253E%253C%252Fsvg%253E%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
+
+<!-- Apple Touch Icon (inline SVG as base64) -->
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxODAgMTgwIj48cmVjdCB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iIzBlMGUwZiIgcng9IjQwIi8+PHRleHQgeD0iOTAiIHk9IjEyNSIgZm9udC1zaXplPSIxMDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPvCfj4s8L3RleHQ+PC9zdmc+">
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e0f;
+    --surface: #161618;
+    --surface2: #1e1e21;
+    --border: #2a2a2f;
+    --accent: #c8f060;
+    --accent2: #60c8f0;
+    --accent3: #f060a8;
+    --text: #f0ede8;
+    --muted: #666672;
+    --card-bg: #131315;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 20px 80px;
+    background-image:
+      radial-gradient(ellipse 60% 40% at 80% 10%, rgba(200,240,96,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 60% at 10% 80%, rgba(96,200,240,0.04) 0%, transparent 60%);
+  }
+
+  /* ── HEADER ── */
+  header { text-align: center; margin-bottom: 20px; animation: fadeUp 0.6s ease both; }
+  header .label { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase; margin-bottom: 10px; }
+  header h1 { font-size: clamp(26px, 5vw, 40px); font-weight: 800; letter-spacing: -0.03em; line-height: 1; }
+  header h1 span { color: var(--accent); }
+
+  /* ── INTENTION BAR ── */
+  .intention-bar {
+    width: 100%; max-width: 640px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 24px;
+    animation: fadeUp 0.6s 0.05s ease both;
+  }
+  .intention-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; color: var(--accent2); text-transform: uppercase; white-space: nowrap; }
+  .intention-input {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .intention-input::placeholder { color: var(--muted); font-weight: 400; }
+
+  /* ── QUOTE ── */
+  .quote-box {
+    width: 100%; max-width: 640px;
+    text-align: center;
+    padding: 0 8px;
+    margin-bottom: 28px;
+    animation: fadeUp 0.6s 0.08s ease both;
+    min-height: 52px;
+  }
+  .quote-text {
+    font-size: 14px;
+    font-style: italic;
+    color: var(--text);
+    line-height: 1.5;
+    opacity: 0.85;
+    transition: opacity 0.5s;
+  }
+  .quote-author {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    margin-top: 4px;
+  }
+
+  /* ── STREAK ── */
+  .streak-wrap { display: flex; flex-direction: column; align-items: center; gap: 6px; margin-bottom: 20px; }
+  .streak-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase; }
+  .streak-row { display: flex; gap: 6px; }
+  .streak-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); transition: background 0.3s; }
+  .streak-dot.active { background: var(--accent); box-shadow: 0 0 6px rgba(200,240,96,0.5); }
+
+  /* ── STATS ROW ── */
+  .stats-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 28px;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+  .stat-chip {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 16px;
+    text-align: center;
+  }
+  .stat-val { font-family: 'DM Mono', monospace; font-size: 18px; font-weight: 500; color: var(--accent); }
+  .stat-lbl { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; margin-top: 2px; }
+
+  /* ── TIMER ── */
+  .timer-section { display: flex; flex-direction: column; align-items: center; gap: 20px; margin-bottom: 32px; animation: fadeUp 0.6s 0.12s ease both; }
+  .ring-wrap { position: relative; width: 200px; height: 200px; }
+  .ring-wrap svg { transform: rotate(-90deg); width: 200px; height: 200px; }
+  .ring-bg { fill: none; stroke: var(--border); stroke-width: 6; }
+  .ring-progress { fill: none; stroke: var(--accent); stroke-width: 6; stroke-linecap: round; stroke-dasharray: 565; stroke-dashoffset: 0; transition: stroke-dashoffset 1s linear, stroke 0.5s; filter: drop-shadow(0 0 8px rgba(200,240,96,0.5)); }
+  .ring-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+  #timer-display { font-family: 'DM Mono', monospace; font-size: 40px; font-weight: 500; letter-spacing: -0.02em; line-height: 1; }
+  .timer-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase; }
+
+  .controls { display: flex; gap: 12px; align-items: center; }
+  .btn { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.05em; border: none; border-radius: 8px; cursor: pointer; padding: 10px 22px; transition: all 0.15s ease; }
+  .btn-primary { background: var(--accent); color: #0e0e0f; }
+  .btn-primary:hover { background: #d8ff66; transform: translateY(-1px); }
+  .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+  .btn-secondary:hover { background: var(--border); }
+  .btn-ghost { background: none; color: var(--accent2); border: 1px solid rgba(96,200,240,0.25); }
+  .btn-ghost:hover { background: rgba(96,200,240,0.08); border-color: var(--accent2); }
+
+  .interval-row { display: flex; gap: 8px; align-items: center; font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); }
+  .interval-row select { background: var(--surface2); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 5px 10px; font-family: 'DM Mono', monospace; font-size: 12px; outline: none; cursor: pointer; }
+
+  /* ── EXERCISE PANEL ── */
+  .exercise-panel { width: 100%; max-width: 640px; animation: fadeUp 0.6s 0.18s ease both; }
+  .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .panel-title { font-size: 13px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+  .shuffle-btn { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: var(--accent2); background: none; border: 1px solid rgba(96,200,240,0.25); border-radius: 5px; padding: 5px 12px; cursor: pointer; transition: all 0.15s; text-transform: uppercase; }
+  .shuffle-btn:hover { background: rgba(96,200,240,0.08); border-color: var(--accent2); }
+
+  .exercise-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 480px) { .exercise-grid { grid-template-columns: 1fr; } }
+
+  .exercise-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; display: flex; gap: 12px; align-items: flex-start; transition: border-color 0.2s, transform 0.2s; animation: cardIn 0.35s ease both; cursor: pointer; }
+  .exercise-card:hover { border-color: #3a3a42; transform: translateY(-2px); }
+  .exercise-card.done { border-color: var(--accent); background: rgba(200,240,96,0.04); }
+  .exercise-card.done .card-icon { background: var(--accent); color: #0e0e0f; }
+  @keyframes cardIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .card-icon { width: 36px; height: 36px; border-radius: 8px; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; transition: background 0.2s, color 0.2s; }
+  .card-body { flex: 1; }
+  .card-name { font-size: 14px; font-weight: 700; line-height: 1.2; margin-bottom: 3px; }
+  .card-detail { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); }
+  .card-intensity { display: inline-block; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.1em; padding: 2px 6px; border-radius: 3px; margin-top: 5px; text-transform: uppercase; }
+  .intensity-low { background: rgba(96,200,240,0.12); color: var(--accent2); }
+  .intensity-med { background: rgba(200,240,96,0.12); color: var(--accent); }
+  .intensity-high { background: rgba(240,96,168,0.12); color: var(--accent3); }
+
+  .progress-row { display: flex; align-items: center; gap: 12px; margin-top: 16px; font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); }
+  .progress-bar { flex: 1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.3s ease; box-shadow: 0 0 6px rgba(200,240,96,0.4); }
+
+  /* ── BREATH BUTTON ── */
+  .breath-row { margin-top: 20px; display: flex; justify-content: center; }
+  .breath-btn { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.12em; color: var(--accent3); background: none; border: 1px solid rgba(240,96,168,0.25); border-radius: 6px; padding: 8px 18px; cursor: pointer; transition: all 0.15s; text-transform: uppercase; }
+  .breath-btn:hover { background: rgba(240,96,168,0.08); border-color: var(--accent3); }
+
+  /* ── OVERLAYS ── */
+  .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(6px); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
+  .overlay.show { display: flex; }
+  .overlay-box { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 36px 32px; max-width: 420px; width: 100%; text-align: center; animation: popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275) both; }
+  @keyframes popIn { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: scale(1); } }
+
+  /* Break alert */
+  #alert-overlay .overlay-box { border-color: var(--accent); box-shadow: 0 0 60px rgba(200,240,96,0.12); }
+  .alert-icon { font-size: 48px; margin-bottom: 12px; }
+  .alert-title { font-size: 24px; font-weight: 800; color: var(--accent); margin-bottom: 6px; }
+  .alert-sub { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+  .alert-quote { font-size: 13px; font-style: italic; color: var(--text); opacity: 0.8; margin-bottom: 20px; line-height: 1.5; padding: 0 8px; }
+  .alert-exercises { text-align: left; margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; }
+  .alert-ex-item { display: flex; align-items: center; gap: 10px; background: var(--surface2); border-radius: 8px; padding: 10px 14px; font-size: 13px; font-weight: 600; }
+  .alert-ex-item span:first-child { font-size: 20px; }
+  .alert-dismiss-msg { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent); margin-bottom: 14px; letter-spacing: 0.05em; min-height: 18px; }
+
+  /* Breath overlay */
+  #breath-overlay .overlay-box { border-color: var(--accent3); box-shadow: 0 0 60px rgba(240,96,168,0.1); }
+  .breath-title { font-size: 20px; font-weight: 800; color: var(--accent3); margin-bottom: 8px; }
+  .breath-instruction { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); margin-bottom: 24px; }
+  .breath-circle-wrap { display: flex; justify-content: center; margin-bottom: 24px; }
+  .breath-circle { width: 120px; height: 120px; border-radius: 50%; background: rgba(240,96,168,0.08); border: 2px solid rgba(240,96,168,0.3); display: flex; align-items: center; justify-content: center; transition: transform 4s ease, background 4s ease, border-color 1s; }
+  .breath-circle.inhale { transform: scale(1.5); background: rgba(240,96,168,0.2); border-color: var(--accent3); }
+  .breath-circle.hold { transform: scale(1.5); background: rgba(240,96,168,0.25); }
+  .breath-circle.exhale { transform: scale(1); background: rgba(240,96,168,0.05); }
+  .breath-phase { font-size: 14px; font-weight: 700; color: var(--accent3); }
+  .breath-count { font-family: 'DM Mono', monospace; font-size: 28px; color: var(--text); margin-bottom: 8px; }
+  .breath-cycle-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.12em; margin-bottom: 20px; }
+
+  /* Intention overlay */
+  #intention-overlay .overlay-box { border-color: var(--accent2); box-shadow: 0 0 60px rgba(96,200,240,0.1); }
+  .int-title { font-size: 20px; font-weight: 800; color: var(--accent2); margin-bottom: 8px; }
+  .int-sub { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); margin-bottom: 20px; }
+  .int-input-big { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; color: var(--text); font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 600; outline: none; margin-bottom: 16px; transition: border-color 0.2s; }
+  .int-input-big:focus { border-color: var(--accent2); }
+
+  /* Confetti canvas */
+  #confetti-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 200; }
+
+  /* Toast */
+  .toast { position: fixed; top: 24px; left: 50%; transform: translateX(-50%) translateY(-100px); background: var(--accent); color: #0e0e0f; font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; padding: 14px 28px; border-radius: 12px; box-shadow: 0 8px 32px rgba(200,240,96,0.25); transition: transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275); z-index: 999; white-space: nowrap; }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<header>
+  <div class="label">// Desk Fitness OS</div>
+  <h1>Stay <span>Active</span> at Work</h1>
+</header>
+
+<!-- Intention bar -->
+<div class="intention-bar">
+  <div class="intention-label">Today's Focus</div>
+  <input class="intention-input" id="intention-input" type="text" placeholder="What's your intention for today?" maxlength="80">
+</div>
+
+<!-- Quote -->
+<div class="quote-box">
+  <div class="quote-text" id="quote-text"></div>
+  <div class="quote-author" id="quote-author"></div>
+</div>
+
+<!-- Stats -->
+<div class="stats-row">
+  <div class="stat-chip"><div class="stat-val" id="stat-sessions">0</div><div class="stat-lbl">Sessions</div></div>
+  <div class="stat-chip"><div class="stat-val" id="stat-exercises">0</div><div class="stat-lbl">Exercises</div></div>
+  <div class="stat-chip"><div class="stat-val" id="stat-streak">0</div><div class="stat-lbl">Streak</div></div>
+</div>
+
+<!-- Streak dots -->
+<div class="streak-wrap">
+  <div class="streak-label">Daily Streak</div>
+  <div class="streak-row" id="streak-row"></div>
+</div>
+
+<!-- Timer -->
+<div class="timer-section">
+  <div class="ring-wrap">
+    <svg viewBox="0 0 200 200">
+      <circle class="ring-bg" cx="100" cy="100" r="90"/>
+      <circle class="ring-progress" id="ring" cx="100" cy="100" r="90"/>
+    </svg>
+    <div class="ring-center">
+      <div id="timer-display">2:00:00</div>
+      <div class="timer-label" id="timer-status">ready</div>
+    </div>
+  </div>
+  <div class="interval-row">
+    <span>Interval:</span>
+    <select id="interval-select" onchange="setInterval_()">
+      <option value="2700">45 min</option>
+      <option value="3600">1 hour</option>
+      <option value="5400">90 min</option>
+      <option value="7200" selected>2 hours</option>
+    </select>
+  </div>
+  <div class="controls">
+    <button class="btn btn-primary" id="start-btn" onclick="toggleTimer()">Start</button>
+    <button class="btn btn-secondary" onclick="resetTimer()">Reset</button>
+  </div>
+</div>
+
+<!-- Exercise Panel -->
+<div class="exercise-panel">
+  <div class="panel-header">
+    <div class="panel-title">Current Exercises</div>
+    <button class="shuffle-btn" onclick="shuffleExercises()">⟳ Shuffle</button>
+  </div>
+  <div class="exercise-grid" id="exercise-grid"></div>
+  <div class="progress-row">
+    <span id="progress-text">0 / 5 done</span>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+  </div>
+  <div class="breath-row">
+    <button class="breath-btn" onclick="openBreath()">🫁 Breathing Reset</button>
+  </div>
+</div>
+
+<!-- Break Alert Overlay -->
+<div class="overlay" id="alert-overlay">
+  <div class="overlay-box">
+    <div class="alert-icon">🏃</div>
+    <div class="alert-title">Exercise Break!</div>
+    <div class="alert-sub">Time to move — your body will thank you</div>
+    <div class="alert-quote" id="alert-quote"></div>
+    <div class="alert-exercises" id="alert-exercises"></div>
+    <div class="alert-dismiss-msg" id="alert-dismiss-msg"></div>
+    <button class="btn btn-primary" style="width:100%" onclick="dismissAlert()">Let's Go!</button>
+  </div>
+</div>
+
+<!-- Breath Overlay -->
+<div class="overlay" id="breath-overlay">
+  <div class="overlay-box">
+    <div class="breath-title">4-7-8 Breathing</div>
+    <div class="breath-instruction">Inhale 4s · Hold 7s · Exhale 8s — a full nervous system reset</div>
+    <div class="breath-circle-wrap">
+      <div class="breath-circle" id="breath-circle">
+        <div class="breath-phase" id="breath-phase">Ready</div>
+      </div>
+    </div>
+    <div class="breath-count" id="breath-count">—</div>
+    <div class="breath-cycle-label" id="breath-cycle-label">Press start to begin</div>
+    <div class="controls" style="justify-content:center;margin-bottom:16px;">
+      <button class="btn btn-ghost" id="breath-start-btn" onclick="startBreath()">Start</button>
+      <button class="btn btn-secondary" onclick="closeBreath()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Intention Overlay -->
+<div class="overlay" id="intention-overlay">
+  <div class="overlay-box">
+    <div class="int-title">Set Your Intention</div>
+    <div class="int-sub">What will make today meaningful?</div>
+    <input class="int-input-big" id="int-input-big" type="text" placeholder="e.g. Stay focused, move often, be kind" maxlength="80">
+    <button class="btn btn-primary" style="width:100%" onclick="saveIntention()">Set Intention</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════
+//  EXERCISES
+// ═══════════════════════════════════════════
+const ALL_EXERCISES = [
+  // ─ Gentle ─
+  { name: "Neck Rolls", icon: "🔄", detail: "5 reps each direction", intensity: "low" },
+  { name: "Shoulder Shrugs", icon: "🤷", detail: "10 reps, hold 3 sec", intensity: "low" },
+  { name: "Spinal Twist", icon: "🌀", detail: "Hold 15 sec each side", intensity: "low" },
+  { name: "Chest Opener", icon: "🦋", detail: "Clasp hands behind, hold 15 sec", intensity: "low" },
+  { name: "Seated Leg Raises", icon: "🦵", detail: "10 reps each leg", intensity: "low" },
+  { name: "Calf Raises", icon: "👟", detail: "15 reps standing", intensity: "low" },
+  { name: "Hip Flexor Stretch", icon: "🧘", detail: "Hold 20 sec each side", intensity: "low" },
+  { name: "Wrist Circles", icon: "✋", detail: "10 circles each direction", intensity: "low" },
+  { name: "Eye Focus Reset", icon: "👁️", detail: "Near/far focus 10x", intensity: "low" },
+  { name: "Figure-Four Stretch", icon: "🪷", detail: "Hold 20 sec each side, seated", intensity: "low" },
+  { name: "Ankle Circles", icon: "🦶", detail: "10 circles each ankle", intensity: "low" },
+  { name: "Overhead Reach", icon: "🙆", detail: "Arms up, hold 10 sec, 5 reps", intensity: "low" },
+  { name: "Seated Cat-Cow", icon: "🐱", detail: "10 slow breath cycles", intensity: "low" },
+  { name: "Forearm Stretch", icon: "🤲", detail: "Hold 15 sec each arm", intensity: "low" },
+  { name: "Glute Squeezes", icon: "🍑", detail: "Squeeze and hold 5 sec, 15 reps", intensity: "low" },
+  { name: "Ear to Shoulder", icon: "😌", detail: "Hold 20 sec each side", intensity: "low" },
+  { name: "Finger Stretches", icon: "🖐️", detail: "Spread wide, hold 5 sec, 10 reps", intensity: "low" },
+  { name: "Seated Forward Fold", icon: "🫸", detail: "Reach to toes, hold 20 sec", intensity: "low" },
+  // ─ Moderate ─
+  { name: "Desk Push-Ups", icon: "🙌", detail: "15–20 reps on desk edge", intensity: "med" },
+  { name: "Chair Squats", icon: "🪑", detail: "15–20 reps", intensity: "med" },
+  { name: "Tricep Dips", icon: "💺", detail: "10–15 reps on chair", intensity: "med" },
+  { name: "Standing March", icon: "🚶", detail: "30 seconds, knees high", intensity: "med" },
+  { name: "Torso Rotations", icon: "🔁", detail: "20 reps with arms out", intensity: "med" },
+  { name: "Lateral Arm Raises", icon: "🦅", detail: "12 reps each side", intensity: "med" },
+  { name: "Side Lunges", icon: "↔️", detail: "10 reps each side", intensity: "med" },
+  { name: "Standing Toe Touch", icon: "⬇️", detail: "10 slow reps, hold 3 sec", intensity: "med" },
+  { name: "Resistance Band Row", icon: "💪", detail: "15 reps if band available", intensity: "med" },
+  { name: "Shadow Boxing", icon: "🥊", detail: "30 seconds, jab-cross combos", intensity: "med" },
+  { name: "Step Taps", icon: "👣", detail: "Side-to-side 30 seconds", intensity: "med" },
+  { name: "Standing Hip Circles", icon: "🌐", detail: "10 circles each direction", intensity: "med" },
+  { name: "Reverse Lunges", icon: "🔙", detail: "10 reps each leg", intensity: "med" },
+  { name: "Seated Bicycle", icon: "🚲", detail: "20 reps alternating knees", intensity: "med" },
+  { name: "Standing Calf Stretch", icon: "🧎", detail: "Hold 20 sec each leg", intensity: "med" },
+  // ─ Intense ─
+  { name: "Wall Sit", icon: "🧱", detail: "Hold 30–60 seconds", intensity: "high" },
+  { name: "Plank Hold", icon: "🏋️", detail: "Hold 30–60 seconds", intensity: "high" },
+  { name: "High Knees", icon: "🏃", detail: "30 seconds full effort", intensity: "high" },
+  { name: "Broad Jumps", icon: "🦘", detail: "5–10 jumps", intensity: "high" },
+  { name: "Half Burpee", icon: "⚡", detail: "8–10 reps", intensity: "high" },
+  { name: "Mountain Climbers", icon: "🧗", detail: "20 reps (10 each leg)", intensity: "high" },
+  { name: "Jump Squats", icon: "🔥", detail: "10 reps explosive", intensity: "high" },
+  { name: "Speed Step Taps", icon: "💨", detail: "45 seconds fast pace", intensity: "high" },
+  { name: "Push-Up to T", icon: "✈️", detail: "8 reps, rotate to side plank", intensity: "high" },
+  { name: "Squat Pulses", icon: "📳", detail: "Hold squat, pulse 20 reps", intensity: "high" },
+  { name: "Invisible Jump Rope", icon: "🪢", detail: "45 seconds continuous", intensity: "high" },
+  { name: "Lateral Hops", icon: "🐇", detail: "20 hops side to side", intensity: "high" },
+];
+
+const INTENSITIES = { low: "Gentle", med: "Moderate", high: "Intense" };
+
+// ═══════════════════════════════════════════
+//  QUOTES  — 120 entries, no-repeat queue
+// ═══════════════════════════════════════════
+const ALL_QUOTES = [
+  // Perseverance
+  { text: "It does not matter how slowly you go as long as you do not stop.", author: "Confucius" },
+  { text: "Fall seven times, stand up eight.", author: "Japanese Proverb" },
+  { text: "Perseverance is not a long race; it is many short races one after the other.", author: "Walter Elliot" },
+  { text: "Energy and persistence conquer all things.", author: "Benjamin Franklin" },
+  { text: "The secret of getting ahead is getting started.", author: "Mark Twain" },
+  { text: "What you get by achieving your goals is not as important as what you become.", author: "Zig Ziglar" },
+  { text: "You don't have to be great to start, but you have to start to be great.", author: "Zig Ziglar" },
+  { text: "Strength does not come from physical capacity. It comes from an indomitable will.", author: "Mahatma Gandhi" },
+  { text: "With the new day comes new strength and new thoughts.", author: "Eleanor Roosevelt" },
+  { text: "It always seems impossible until it's done.", author: "Nelson Mandela" },
+  { text: "The harder the battle, the sweeter the victory.", author: "Les Brown" },
+  { text: "Pain is temporary. Quitting lasts forever.", author: "Lance Armstrong" },
+  { text: "If you're going through hell, keep going.", author: "Winston Churchill" },
+  { text: "Success is the sum of small efforts repeated day in and day out.", author: "Robert Collier" },
+  { text: "A river cuts through rock not because of its power, but its persistence.", author: "Jim Watkins" },
+  // Health & Wellness
+  { text: "Take care of your body. It's the only place you have to live.", author: "Jim Rohn" },
+  { text: "Physical fitness is not only one of the most important keys to a healthy body, it is the basis of dynamic and creative intellectual activity.", author: "John F. Kennedy" },
+  { text: "To keep the body in good health is a duty, otherwise we shall not be able to keep our mind strong and clear.", author: "Buddha" },
+  { text: "Movement is medicine for creating change in a person's physical, emotional, and mental states.", author: "Carol Welch" },
+  { text: "Your body can stand almost anything. It's your mind you have to convince.", author: "Unknown" },
+  { text: "The groundwork for all happiness is good health.", author: "Leigh Hunt" },
+  { text: "A healthy outside starts from the inside.", author: "Robert Urich" },
+  { text: "The first wealth is health.", author: "Ralph Waldo Emerson" },
+  { text: "Those who think they have no time for healthy eating will sooner or later have to find time for illness.", author: "Edward Stanley" },
+  { text: "An early morning walk is a blessing for the whole day.", author: "Henry David Thoreau" },
+  { text: "Exercise is a celebration of what your body can do, not a punishment.", author: "Unknown" },
+  { text: "Lack of activity destroys the good condition of every human being, while movement and methodical physical exercise save it.", author: "Plato" },
+  { text: "Fitness is not about being better than someone else. It's about being better than you used to be.", author: "Unknown" },
+  // Mindset
+  { text: "The mind is everything. What you think you become.", author: "Buddha" },
+  { text: "Whether you think you can or think you can't, you're right.", author: "Henry Ford" },
+  { text: "The only limit to our realization of tomorrow is our doubts of today.", author: "Franklin D. Roosevelt" },
+  { text: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" },
+  { text: "Change your thoughts and you change your world.", author: "Norman Vincent Peale" },
+  { text: "Happiness is not something ready made. It comes from your own actions.", author: "Dalai Lama" },
+  { text: "The present moment is the only moment available to us, and it is the door to all moments.", author: "Thich Nhat Hanh" },
+  { text: "You are braver than you believe, stronger than you seem, and smarter than you think.", author: "A.A. Milne" },
+  { text: "Nothing is impossible to a willing heart.", author: "John Heywood" },
+  { text: "Act as if what you do makes a difference. It does.", author: "William James" },
+  { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+  { text: "Don't watch the clock; do what it does. Keep going.", author: "Sam Levenson" },
+  { text: "Keep your face always toward the sunshine, and shadows will fall behind you.", author: "Walt Whitman" },
+  { text: "In the middle of every difficulty lies opportunity.", author: "Albert Einstein" },
+  { text: "The best time to plant a tree was 20 years ago. The second best time is now.", author: "Chinese Proverb" },
+  { text: "You miss 100% of the shots you don't take.", author: "Wayne Gretzky" },
+  { text: "Strive not to be a success, but rather to be of value.", author: "Albert Einstein" },
+  // Productivity
+  { text: "Focus on being productive instead of busy.", author: "Tim Ferriss" },
+  { text: "Do the hard jobs first. The easy jobs will take care of themselves.", author: "Dale Carnegie" },
+  { text: "You don't need more time; you need to decide.", author: "Seth Godin" },
+  { text: "The key is not to prioritize what's on your schedule, but to schedule your priorities.", author: "Stephen Covey" },
+  { text: "Either you run the day, or the day runs you.", author: "Jim Rohn" },
+  { text: "Done is better than perfect.", author: "Sheryl Sandberg" },
+  { text: "Simplicity is the ultimate sophistication.", author: "Leonardo da Vinci" },
+  { text: "Start where you are. Use what you have. Do what you can.", author: "Arthur Ashe" },
+  { text: "Productivity is never an accident. It is always the result of commitment to excellence.", author: "Paul J. Meyer" },
+  { text: "Small daily improvements over time lead to stunning results.", author: "Robin Sharma" },
+  { text: "Well begun is half done.", author: "Aristotle" },
+  { text: "It's not about having time. It's about making time.", author: "Unknown" },
+  // Self-belief
+  { text: "No one can make you feel inferior without your consent.", author: "Eleanor Roosevelt" },
+  { text: "To be yourself in a world that is constantly trying to make you something else is the greatest accomplishment.", author: "Ralph Waldo Emerson" },
+  { text: "Dare to be what you are, and learn to resign with a good grace all that you are not.", author: "Henri Frederic Amiel" },
+  { text: "Knowing yourself is the beginning of all wisdom.", author: "Aristotle" },
+  { text: "Own who you are.", author: "Unknown" },
+  { text: "Do what you feel in your heart to be right, for you'll be criticized anyway.", author: "Eleanor Roosevelt" },
+  { text: "If you have good thoughts they will shine out of your face like sunbeams.", author: "Roald Dahl" },
+  { text: "You are enough, a thousand times enough.", author: "Atticus" },
+  { text: "Confidence is not 'they will like me'. Confidence is 'I'll be fine if they don't'.", author: "Christina Grimmie" },
+  { text: "The most courageous act is still to think for yourself. Aloud.", author: "Coco Chanel" },
+  // Growth
+  { text: "Live as if you were to die tomorrow. Learn as if you were to live forever.", author: "Mahatma Gandhi" },
+  { text: "The more that you read, the more things you will know.", author: "Dr. Seuss" },
+  { text: "An investment in knowledge pays the best interest.", author: "Benjamin Franklin" },
+  { text: "Growth is never by mere chance; it is the result of forces working together.", author: "James Cash Penney" },
+  { text: "What we fear doing most is usually what we most need to do.", author: "Tim Ferriss" },
+  { text: "You cannot step into the same river twice.", author: "Heraclitus" },
+  { text: "The only real mistake is the one from which we learn nothing.", author: "Henry Ford" },
+  { text: "Life is 10% what happens to you and 90% how you react to it.", author: "Charles R. Swindoll" },
+  { text: "Obstacles are those frightful things you see when you take your eyes off your goal.", author: "Henry Ford" },
+  { text: "Nothing will work unless you do.", author: "Maya Angelou" },
+  { text: "Go confidently in the direction of your dreams. Live the life you have imagined.", author: "Henry David Thoreau" },
+  // Calm & Presence
+  { text: "Do not dwell in the past, do not dream of the future, concentrate the mind on the present moment.", author: "Buddha" },
+  { text: "You have power over your mind, not outside events. Realize this, and you will find strength.", author: "Marcus Aurelius" },
+  { text: "Waste no more time arguing about what a good person should be. Be one.", author: "Marcus Aurelius" },
+  { text: "Nowhere can man find a quieter or more untroubled retreat than in his own soul.", author: "Marcus Aurelius" },
+  { text: "Very little is needed to make a happy life; it is all within yourself.", author: "Marcus Aurelius" },
+  { text: "The nearer a man comes to a calm mind, the closer he is to strength.", author: "Marcus Aurelius" },
+  { text: "Breathe. Let go. Remind yourself that this very moment is the only one you know you have for sure.", author: "Oprah Winfrey" },
+  { text: "Sometimes the most productive thing you can do is rest.", author: "Mark Black" },
+  { text: "Almost everything will work again if you unplug it for a few minutes — including you.", author: "Anne Lamott" },
+  { text: "Within you there is a stillness and a sanctuary to which you can retreat at any time.", author: "Hermann Hesse" },
+  // Fun & Lighthearted
+  { text: "You don't have to be extreme, just consistent.", author: "Unknown" },
+  { text: "Your body hears everything your mind says.", author: "Naomi Judd" },
+  { text: "One hour of exercise a day is 4% of your day. No excuses.", author: "Unknown" },
+  { text: "When you feel like quitting, think about why you started.", author: "Unknown" },
+  { text: "Sore today, strong tomorrow.", author: "Unknown" },
+  { text: "The body achieves what the mind believes.", author: "Unknown" },
+  { text: "Make yourself proud.", author: "Unknown" },
+  { text: "You've survived 100% of your worst days.", author: "Unknown" },
+  { text: "Good things come to those who sweat.", author: "Unknown" },
+  { text: "Sweat is just fat crying.", author: "Unknown" },
+  { text: "Your future self is watching you through your memories. Make them proud.", author: "Unknown" },
+  { text: "If it doesn't challenge you, it doesn't change you.", author: "Fred DeVito" },
+  { text: "Push harder than yesterday if you want a different tomorrow.", author: "Unknown" },
+  { text: "Discipline is choosing between what you want now and what you want most.", author: "Abraham Lincoln" },
+  { text: "The last three or four reps is what makes the muscle grow.", author: "Arnold Schwarzenegger" },
+  { text: "Once you see results, it becomes an addiction.", author: "Unknown" },
+  { text: "Your health is an investment, not an expense.", author: "Unknown" },
+  { text: "Today I will do what others won't, so tomorrow I can do what others can't.", author: "Jerry Rice" },
+  { text: "Champions aren't made in gyms. They are made from something deep inside them.", author: "Muhammad Ali" },
+  { text: "I hated every minute of training, but I said 'Don't quit. Suffer now and live the rest of your life as a champion.'", author: "Muhammad Ali" },
+  { text: "The difference between the impossible and the possible lies in a person's determination.", author: "Tommy Lasorda" },
+  { text: "You don't find willpower. You create it.", author: "Unknown" },
+  { text: "Set your goals high, and don't stop till you get there.", author: "Bo Jackson" },
+];
+
+// No-repeat queue
+let quoteQueue = [];
+function nextQuote() {
+  if (quoteQueue.length === 0) quoteQueue = [...ALL_QUOTES].sort(() => Math.random() - 0.5);
+  return quoteQueue.pop();
+}
+
+function displayQuote() {
+  const q = nextQuote();
+  const el = document.getElementById('quote-text');
+  const au = document.getElementById('quote-author');
+  el.style.opacity = 0;
+  setTimeout(() => {
+    el.textContent = `"${q.text}"`;
+    au.textContent = `— ${q.author}`;
+    el.style.opacity = 0.85;
+  }, 300);
+}
+
+// ═══════════════════════════════════════════
+//  DISMISS MESSAGES
+// ═══════════════════════════════════════════
+const DISMISS_MSGS = [
+  "You're building an unbreakable habit! 💪",
+  "Every rep is an investment in yourself.",
+  "Small moves, big transformation over time.",
+  "Your future self says thank you.",
+  "Consistency is the real superpower.",
+  "Movement is medicine — you just took a dose!",
+  "You showed up. That's everything.",
+  "Stronger with every session. Keep going!",
+  "Body and mind both got a win today.",
+  "Another brick in the wall of your best self.",
+  "You're doing what most people won't. Respect.",
+  "Progress isn't always visible, but it's always real.",
+  "Rest is part of the plan — but so is this.",
+  "One step at a time. You've got this.",
+  "Fuelled up and ready to crush the next session!",
+];
+
+// ═══════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════
+let totalSeconds = 7200;
+let remaining = 7200;
+let running = false;
+let intervalId = null;
+let currentExercises = [];
+let completedCount = 0;
+let streak = 0;
+let totalSessions = 0;
+let totalExercises = 0;
+const MAX_STREAK = 8;
+
+// Load from localStorage
+function loadState() {
+  try {
+    const s = JSON.parse(localStorage.getItem('deskfit') || '{}');
+    streak = s.streak || 0;
+    totalSessions = s.sessions || 0;
+    totalExercises = s.exercises || 0;
+    const intention = s.intention || '';
+    document.getElementById('intention-input').value = intention;
+  } catch(e) {}
+}
+
+function saveState() {
+  try {
+    localStorage.setItem('deskfit', JSON.stringify({
+      streak, sessions: totalSessions, exercises: totalExercises,
+      intention: document.getElementById('intention-input').value
+    }));
+  } catch(e) {}
+}
+
+// ═══════════════════════════════════════════
+//  STREAK / STATS
+// ═══════════════════════════════════════════
+function buildStreak() {
+  const row = document.getElementById('streak-row');
+  row.innerHTML = '';
+  for (let i = 0; i < MAX_STREAK; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'streak-dot' + (i < streak ? ' active' : '');
+    row.appendChild(dot);
+  }
+  document.getElementById('stat-streak').textContent = streak;
+  document.getElementById('stat-sessions').textContent = totalSessions;
+  document.getElementById('stat-exercises').textContent = totalExercises;
+}
+
+// ═══════════════════════════════════════════
+//  TIMER
+// ═══════════════════════════════════════════
+function fmt(s) {
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = s % 60;
+  if (h > 0) return `${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+  return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+}
+
+function updateRing() {
+  const ring = document.getElementById('ring');
+  const pct = remaining / totalSeconds;
+  const circ = 565;
+  ring.style.strokeDashoffset = circ * (1 - pct);
+  if (pct > 0.5) ring.style.stroke = 'var(--accent)';
+  else if (pct > 0.2) ring.style.stroke = 'var(--accent2)';
+  else ring.style.stroke = 'var(--accent3)';
+}
+
+function updateDisplay() {
+  document.getElementById('timer-display').textContent = fmt(remaining);
+  updateRing();
+}
+
+function toggleTimer() {
+  if (running) {
+    clearInterval(intervalId);
+    running = false;
+    document.getElementById('start-btn').textContent = 'Resume';
+    document.getElementById('timer-status').textContent = 'paused';
+  } else {
+    running = true;
+    document.getElementById('start-btn').textContent = 'Pause';
+    document.getElementById('timer-status').textContent = 'running';
+    intervalId = setInterval(() => {
+      remaining--;
+      updateDisplay();
+      if (remaining <= 0) {
+        clearInterval(intervalId);
+        running = false;
+        triggerBreak();
+      }
+    }, 1000);
+  }
+}
+
+function resetTimer() {
+  clearInterval(intervalId);
+  running = false;
+  remaining = totalSeconds;
+  updateDisplay();
+  document.getElementById('start-btn').textContent = 'Start';
+  document.getElementById('timer-status').textContent = 'ready';
+  shuffleExercises();
+  displayQuote();
+}
+
+function setInterval_() {
+  const val = parseInt(document.getElementById('interval-select').value);
+  totalSeconds = val;
+  remaining = val;
+  updateDisplay();
+  document.getElementById('timer-status').textContent = 'ready';
+  if (running) { clearInterval(intervalId); running = false; document.getElementById('start-btn').textContent = 'Start'; }
+}
+
+// ═══════════════════════════════════════════
+//  EXERCISES
+// ═══════════════════════════════════════════
+function pickExercises(n = 5) {
+  const low = ALL_EXERCISES.filter(e => e.intensity === 'low');
+  const med = ALL_EXERCISES.filter(e => e.intensity === 'med');
+  const high = ALL_EXERCISES.filter(e => e.intensity === 'high');
+  const sh = arr => [...arr].sort(() => Math.random() - 0.5);
+  const picked = [...sh(high).slice(0,1), ...sh(med).slice(0,2), ...sh(low).slice(0,2)];
+  return [...picked].sort(() => Math.random() - 0.5).slice(0, n);
+}
+
+function renderExercises() {
+  const grid = document.getElementById('exercise-grid');
+  grid.innerHTML = '';
+  completedCount = 0;
+  updateProgress();
+  currentExercises.forEach((ex, i) => {
+    const card = document.createElement('div');
+    card.className = 'exercise-card';
+    card.style.animationDelay = `${i * 0.06}s`;
+    card.onclick = () => toggleDone(card);
+    card.innerHTML = `
+      <div class="card-icon">${ex.icon}</div>
+      <div class="card-body">
+        <div class="card-name">${ex.name}</div>
+        <div class="card-detail">${ex.detail}</div>
+        <div class="card-intensity intensity-${ex.intensity}">${INTENSITIES[ex.intensity]}</div>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+function toggleDone(card) {
+  card.classList.toggle('done');
+  completedCount = document.querySelectorAll('.exercise-card.done').length;
+  updateProgress();
+  if (completedCount === currentExercises.length) {
+    totalExercises += currentExercises.length;
+    totalSessions++;
+    streak = Math.min(streak + 1, MAX_STREAK);
+    buildStreak();
+    saveState();
+    launchConfetti();
+    showToast(DISMISS_MSGS[Math.floor(Math.random() * DISMISS_MSGS.length)]);
+  }
+}
+
+function updateProgress() {
+  const total = currentExercises.length;
+  document.getElementById('progress-text').textContent = `${completedCount} / ${total} done`;
+  document.getElementById('progress-fill').style.width = total ? `${(completedCount / total) * 100}%` : '0%';
+}
+
+function shuffleExercises() {
+  currentExercises = pickExercises(5);
+  renderExercises();
+}
+
+// ═══════════════════════════════════════════
+//  BREAK ALERT
+// ═══════════════════════════════════════════
+function triggerBreak() {
+  document.getElementById('timer-status').textContent = 'break!';
+  const breakExs = pickExercises(3);
+  const list = document.getElementById('alert-exercises');
+  list.innerHTML = '';
+  breakExs.forEach(ex => {
+    const item = document.createElement('div');
+    item.className = 'alert-ex-item';
+    item.innerHTML = `<span>${ex.icon}</span><span>${ex.name} — ${ex.detail}</span>`;
+    list.appendChild(item);
+  });
+  const q = nextQuote();
+  document.getElementById('alert-quote').textContent = `"${q.text}" — ${q.author}`;
+  document.getElementById('alert-dismiss-msg').textContent = '';
+  document.getElementById('alert-overlay').classList.add('show');
+
+  if (Notification.permission === 'granted') {
+    new Notification('Exercise Break! 🏃', {
+      body: breakExs.map(e => e.name).join(', '),
+    });
+  }
+}
+
+function dismissAlert() {
+  const msgs = DISMISS_MSGS;
+  document.getElementById('alert-dismiss-msg').textContent = msgs[Math.floor(Math.random() * msgs.length)];
+  setTimeout(() => {
+    document.getElementById('alert-overlay').classList.remove('show');
+    shuffleExercises();
+    displayQuote();
+    remaining = totalSeconds;
+    running = false;
+    document.getElementById('start-btn').textContent = 'Start';
+    document.getElementById('timer-status').textContent = 'ready';
+    updateDisplay();
+  }, 1200);
+}
+
+// ═══════════════════════════════════════════
+//  BREATHING
+// ═══════════════════════════════════════════
+let breathInterval = null;
+let breathRunning = false;
+
+function openBreath() {
+  document.getElementById('breath-overlay').classList.add('show');
+}
+
+function closeBreath() {
+  clearInterval(breathInterval);
+  breathRunning = false;
+  document.getElementById('breath-overlay').classList.remove('show');
+  document.getElementById('breath-start-btn').textContent = 'Start';
+}
+
+function startBreath() {
+  if (breathRunning) { clearInterval(breathInterval); breathRunning = false; document.getElementById('breath-start-btn').textContent = 'Start'; return; }
+  breathRunning = true;
+  document.getElementById('breath-start-btn').textContent = 'Stop';
+  let cycle = 0;
+  runBreathCycle(cycle);
+  // 4+7+8 = 19 seconds per cycle
+  breathInterval = setInterval(() => { cycle++; runBreathCycle(cycle); }, 19000);
+}
+
+function runBreathCycle(cycle) {
+  const circle = document.getElementById('breath-circle');
+  const phase = document.getElementById('breath-phase');
+  const count = document.getElementById('breath-count');
+  const label = document.getElementById('breath-cycle-label');
+  label.textContent = `Cycle ${cycle + 1}`;
+
+  // Inhale — 4s
+  circle.className = 'breath-circle inhale';
+  phase.textContent = 'Inhale';
+  let n = 4;
+  count.textContent = n;
+  const inhaleT = setInterval(() => { n--; count.textContent = n; if (n <= 0) clearInterval(inhaleT); }, 1000);
+
+  // Hold — 7s after 4s
+  setTimeout(() => {
+    circle.className = 'breath-circle hold';
+    phase.textContent = 'Hold';
+    let h = 7;
+    count.textContent = h;
+    const holdT = setInterval(() => { h--; count.textContent = h; if (h <= 0) clearInterval(holdT); }, 1000);
+  }, 4000);
+
+  // Exhale — 8s after 11s
+  setTimeout(() => {
+    circle.className = 'breath-circle exhale';
+    phase.textContent = 'Exhale';
+    let e = 8;
+    count.textContent = e;
+    const exhaleT = setInterval(() => { e--; count.textContent = e; if (e <= 0) clearInterval(exhaleT); }, 1000);
+  }, 11000);
+}
+
+// ═══════════════════════════════════════════
+//  INTENTION
+// ═══════════════════════════════════════════
+function openIntention() {
+  document.getElementById('int-input-big').value = document.getElementById('intention-input').value;
+  document.getElementById('intention-overlay').classList.add('show');
+}
+
+function saveIntention() {
+  const val = document.getElementById('int-input-big').value.trim();
+  document.getElementById('intention-input').value = val;
+  document.getElementById('intention-overlay').classList.remove('show');
+  saveState();
+  if (val) showToast('✨ Intention set — own it today!');
+}
+
+document.getElementById('intention-input').addEventListener('change', saveState);
+document.getElementById('intention-input').addEventListener('click', openIntention);
+
+// ═══════════════════════════════════════════
+//  CONFETTI
+// ═══════════════════════════════════════════
+function launchConfetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const pieces = Array.from({length: 80}, () => ({
+    x: Math.random() * canvas.width,
+    y: -10,
+    r: Math.random() * 6 + 3,
+    d: Math.random() * 4 + 1,
+    color: ['#c8f060','#60c8f0','#f060a8','#f0c860','#ffffff'][Math.floor(Math.random()*5)],
+    tilt: Math.random() * 10 - 5,
+    tiltSpeed: Math.random() * 0.1,
+  }));
+  let frame = 0;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces.forEach(p => {
+      ctx.beginPath();
+      ctx.fillStyle = p.color;
+      ctx.ellipse(p.x, p.y, p.r, p.r * 0.4, p.tilt, 0, Math.PI * 2);
+      ctx.fill();
+      p.y += p.d;
+      p.x += Math.sin(frame * 0.01 + p.tilt) * 1.5;
+      p.tilt += p.tiltSpeed;
+    });
+    frame++;
+    if (frame < 120) requestAnimationFrame(draw);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  draw();
+}
+
+// ═══════════════════════════════════════════
+//  TOAST
+// ═══════════════════════════════════════════
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// ═══════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════
+if ('Notification' in window && Notification.permission === 'default') {
+  Notification.requestPermission();
+}
+
+// Show intention prompt on first visit
+loadState();
+buildStreak();
+shuffleExercises();
+updateDisplay();
+displayQuote();
+
+// Rotate quote every 5 minutes
+setInterval(() => { if (!running) displayQuote(); }, 300000);
+
+// First visit check
+if (!localStorage.getItem('deskfit')) {
+  setTimeout(() => document.getElementById('intention-overlay').classList.add('show'), 800);
+}
+
+// ═══════════════════════════════════════════
+//  PWA INSTALL PROMPT
+// ═══════════════════════════════════════════
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  // Show a subtle install nudge after 10 seconds
+  setTimeout(() => {
+    if (deferredPrompt) showToast('📲 Tip: Install as app via browser menu → Add to Home Screen');
+  }, 10000);
+});
+window.addEventListener('appinstalled', () => {
+  showToast('✅ DeskFit installed! Find it on your home screen.');
+  deferredPrompt = null;
+});
+
+// ═══════════════════════════════════════════
+//  SERVICE WORKER (inline blob — enables offline + PWA install)
+// ═══════════════════════════════════════════
+if ('serviceWorker' in navigator) {
+  const swCode = `
+    const CACHE = 'deskfit-v1';
+    const FONTS = [
+      'https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap'
+    ];
+    self.addEventListener('install', e => {
+      e.waitUntil(caches.open(CACHE).then(c => c.addAll(FONTS).catch(()=>{})));
+      self.skipWaiting();
+    });
+    self.addEventListener('activate', e => {
+      e.waitUntil(caches.keys().then(keys =>
+        Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
+      ));
+      self.clients.claim();
+    });
+    self.addEventListener('fetch', e => {
+      e.respondWith(
+        caches.match(e.request).then(cached => {
+          if (cached) return cached;
+          return fetch(e.request).then(res => {
+            if (res && res.status === 200) {
+              caches.open(CACHE).then(c => c.put(e.request, res.clone()));
+            }
+            return res;
+          }).catch(() => cached || new Response('Offline', {status: 503}));
+        })
+      );
+    });
+  `;
+  const blob = new Blob([swCode], { type: 'application/javascript' });
+  navigator.serviceWorker.register(URL.createObjectURL(blob), { scope: './' })
+    .then(() => console.log('DeskFit SW ready'))
+    .catch(err => console.warn('SW skipped:', err));
+}
+
+</script>
+</body>
+</html>
