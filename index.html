@@ -232,6 +232,123 @@
   .toast.show { transform: translateX(-50%) translateY(0); }
 
   @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── PMA TOOLBAR ── */
+  .pma-toolbar {
+    width: 100%; max-width: 640px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 28px;
+    animation: fadeUp 0.6s 0.22s ease both;
+  }
+  .pma-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 7px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1px solid;
+    background: none;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .pma-btn-green  { color: var(--accent);  border-color: rgba(200,240,96,0.25);  }
+  .pma-btn-green:hover  { background: rgba(200,240,96,0.08);  border-color: var(--accent); }
+  .pma-btn-blue   { color: var(--accent2); border-color: rgba(96,200,240,0.25);  }
+  .pma-btn-blue:hover   { background: rgba(96,200,240,0.08);  border-color: var(--accent2); }
+  .pma-btn-pink   { color: var(--accent3); border-color: rgba(240,96,168,0.25);  }
+  .pma-btn-pink:hover   { background: rgba(240,96,168,0.08);  border-color: var(--accent3); }
+  .pma-btn-gold   { color: #f0c860;        border-color: rgba(240,200,96,0.25);  }
+  .pma-btn-gold:hover   { background: rgba(240,200,96,0.08);  border-color: #f0c860; }
+  .pma-btn-purple { color: #c060f0;        border-color: rgba(192,96,240,0.25);  }
+  .pma-btn-purple:hover { background: rgba(192,96,240,0.08);  border-color: #c060f0; }
+
+  /* ── 3 GOOD THINGS overlay ── */
+  #good-overlay .overlay-box { border-color: #f0c860; box-shadow: 0 0 60px rgba(240,200,96,0.1); max-width: 460px; }
+  .good-title  { font-size: 20px; font-weight: 800; color: #f0c860; margin-bottom: 4px; }
+  .good-sub    { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); margin-bottom: 20px; }
+  .good-inputs { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; text-align: left; }
+  .good-item   { display: flex; align-items: center; gap: 10px; }
+  .good-num    { font-family: 'DM Mono', monospace; font-size: 18px; font-weight: 500; color: #f0c860; width: 24px; flex-shrink: 0; }
+  .good-input  { flex: 1; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; color: var(--text); font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600; outline: none; transition: border-color 0.2s; }
+  .good-input:focus { border-color: #f0c860; }
+  .good-history { text-align: left; margin-bottom: 16px; }
+  .good-history-title { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
+  .good-entry { background: var(--surface2); border-radius: 8px; padding: 10px 14px; margin-bottom: 6px; font-size: 12px; line-height: 1.5; }
+  .good-entry-date { font-family: 'DM Mono', monospace; font-size: 9px; color: #f0c860; letter-spacing: 0.1em; margin-bottom: 4px; }
+
+  /* ── PMR overlay ── */
+  #pmr-overlay .overlay-box { border-color: #c060f0; box-shadow: 0 0 60px rgba(192,96,240,0.1); }
+  .pmr-title { font-size: 20px; font-weight: 800; color: #c060f0; margin-bottom: 6px; }
+  .pmr-sub   { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); margin-bottom: 20px; }
+  .pmr-body  { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 6px; line-height: 1.3; min-height: 56px; }
+  .pmr-detail { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); margin-bottom: 20px; min-height: 18px; }
+  .pmr-bar-wrap { width: 100%; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-bottom: 20px; }
+  .pmr-bar { height: 100%; background: #c060f0; border-radius: 3px; transition: width 1s linear; box-shadow: 0 0 8px rgba(192,96,240,0.5); }
+  .pmr-step-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.12em; margin-bottom: 20px; }
+
+  /* ── BOX BREATHING overlay ── */
+  #box-overlay .overlay-box { border-color: var(--accent2); box-shadow: 0 0 60px rgba(96,200,240,0.1); }
+  .box-title { font-size: 20px; font-weight: 800; color: var(--accent2); margin-bottom: 6px; }
+  .box-sub   { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); margin-bottom: 20px; }
+  .box-square-wrap { display: flex; justify-content: center; margin-bottom: 16px; position: relative; width: 160px; height: 160px; margin: 0 auto 16px; }
+  .box-svg { width: 160px; height: 160px; }
+  .box-track { fill: none; stroke: var(--border); stroke-width: 4; }
+  .box-prog  { fill: none; stroke: var(--accent2); stroke-width: 4; stroke-linecap: round; filter: drop-shadow(0 0 6px rgba(96,200,240,0.6)); transition: stroke-dashoffset 1s linear; }
+  .box-center-text { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .box-phase { font-size: 13px; font-weight: 700; color: var(--accent2); }
+  .box-count { font-family: 'DM Mono', monospace; font-size: 32px; color: var(--text); line-height: 1; }
+  .box-cycle-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.12em; margin-bottom: 20px; }
+
+  /* ── GROUNDING overlay ── */
+  #ground-overlay .overlay-box { border-color: var(--accent); box-shadow: 0 0 60px rgba(200,240,96,0.1); }
+  .ground-title { font-size: 20px; font-weight: 800; color: var(--accent); margin-bottom: 6px; }
+  .ground-sub   { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); margin-bottom: 20px; }
+  .ground-number { font-size: 64px; font-weight: 800; color: var(--accent); line-height: 1; margin-bottom: 4px; opacity: 0.15; transition: opacity 0.4s; }
+  .ground-number.active { opacity: 1; }
+  .ground-sense  { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .ground-prompt { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); margin-bottom: 24px; line-height: 1.5; }
+  .ground-items  { display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; }
+  .ground-item-row { display: flex; align-items: center; gap: 8px; }
+  .ground-dot    { width: 10px; height: 10px; border-radius: 50%; background: var(--border); flex-shrink: 0; transition: background 0.3s; }
+  .ground-dot.done { background: var(--accent); }
+  .ground-item-input { flex: 1; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; color: var(--text); font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 600; outline: none; transition: border-color 0.2s; }
+  .ground-item-input:focus { border-color: var(--accent); }
+  .ground-progress { display: flex; gap: 6px; justify-content: center; margin-bottom: 20px; }
+  .ground-step-dot { width: 28px; height: 28px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); transition: all 0.3s; }
+  .ground-step-dot.active { background: var(--accent); color: #0e0e0f; font-weight: 700; transform: scale(1.15); }
+  .ground-step-dot.done-step { background: rgba(200,240,96,0.2); color: var(--accent); border: 1px solid var(--accent); }
+
+  /* ── AMBIENT MODE ── */
+  #ambient-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    cursor: pointer;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    text-align: center;
+    background: #0a0a0b;
+    transition: opacity 0.8s;
+  }
+  #ambient-overlay.show { display: flex; }
+  #ambient-canvas { position: absolute; inset: 0; z-index: 0; }
+  .ambient-content { position: relative; z-index: 1; max-width: 560px; }
+  .ambient-time { font-family: 'DM Mono', monospace; font-size: clamp(48px, 10vw, 80px); font-weight: 300; letter-spacing: -0.03em; color: rgba(255,255,255,0.9); margin-bottom: 24px; }
+  .ambient-quote { font-size: clamp(16px, 2.5vw, 22px); font-style: italic; color: rgba(255,255,255,0.7); line-height: 1.6; margin-bottom: 12px; }
+  .ambient-author { font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.15em; color: rgba(255,255,255,0.35); }
+  .ambient-tap  { position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%); font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: rgba(255,255,255,0.2); text-transform: uppercase; }
+  .ambient-intention { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: rgba(255,255,255,0.3); margin-top: 20px; text-transform: uppercase; }
+
 </style>
 </head>
 <body>
@@ -307,7 +424,16 @@
     <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
   </div>
   <div class="breath-row">
-    <button class="breath-btn" onclick="openBreath()">🫁 Breathing Reset</button>
+    <button class="breath-btn" onclick="openBreath()">🫁 4-7-8 Breath</button>
+  </div>
+
+  <!-- PMA Toolbar -->
+  <div class="pma-toolbar">
+    <button class="pma-btn pma-btn-gold"   onclick="openGood()">✨ 3 Good Things</button>
+    <button class="pma-btn pma-btn-purple" onclick="openPMR()">💆 Muscle Relax</button>
+    <button class="pma-btn pma-btn-blue"   onclick="openBox()">🟦 Box Breathe</button>
+    <button class="pma-btn pma-btn-green"  onclick="openGround()">🌿 5-4-3-2-1 Ground</button>
+    <button class="pma-btn pma-btn-pink"   onclick="openAmbient()">🌌 Ambient Mode</button>
   </div>
 </div>
 
@@ -351,6 +477,91 @@
     <input class="int-input-big" id="int-input-big" type="text" placeholder="e.g. Stay focused, move often, be kind" maxlength="80">
     <button class="btn btn-primary" style="width:100%" onclick="saveIntention()">Set Intention</button>
   </div>
+</div>
+
+<!-- 3 Good Things Overlay -->
+<div class="overlay" id="good-overlay">
+  <div class="overlay-box">
+    <div class="good-title">✨ 3 Good Things</div>
+    <div class="good-sub">Name three wins from today — big or small</div>
+    <div class="good-inputs">
+      <div class="good-item"><div class="good-num">1</div><input class="good-input" id="good1" type="text" placeholder="Something good that happened..." maxlength="100"></div>
+      <div class="good-item"><div class="good-num">2</div><input class="good-input" id="good2" type="text" placeholder="Another positive moment..." maxlength="100"></div>
+      <div class="good-item"><div class="good-num">3</div><input class="good-input" id="good3" type="text" placeholder="One more thing to appreciate..." maxlength="100"></div>
+    </div>
+    <button class="btn btn-primary" style="width:100%;margin-bottom:16px;background:#f0c860;color:#0e0e0f" onclick="saveGood()">Save Today's Wins</button>
+    <div class="good-history" id="good-history"></div>
+    <button class="btn btn-secondary" style="width:100%" onclick="closeOverlay('good-overlay')">Close</button>
+  </div>
+</div>
+
+<!-- PMR Overlay -->
+<div class="overlay" id="pmr-overlay">
+  <div class="overlay-box">
+    <div class="pmr-title">💆 Progressive Muscle Relaxation</div>
+    <div class="pmr-sub">Tense each group for 5s · Release and feel the difference</div>
+    <div class="pmr-body" id="pmr-body">Press Start to begin</div>
+    <div class="pmr-detail" id="pmr-detail">Work from feet up through your whole body</div>
+    <div class="pmr-bar-wrap"><div class="pmr-bar" id="pmr-bar" style="width:0%"></div></div>
+    <div class="pmr-step-label" id="pmr-step-label">0 / 0</div>
+    <div class="controls" style="justify-content:center;margin-bottom:16px;">
+      <button class="btn" style="background:#c060f0;color:#fff;" id="pmr-start-btn" onclick="startPMR()">Start</button>
+      <button class="btn btn-secondary" onclick="closePMR()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Box Breathing Overlay -->
+<div class="overlay" id="box-overlay">
+  <div class="overlay-box">
+    <div class="box-title">🟦 Box Breathing</div>
+    <div class="box-sub">Inhale 4s · Hold 4s · Exhale 4s · Hold 4s — Navy SEAL stress reset</div>
+    <div class="box-square-wrap">
+      <svg class="box-svg" viewBox="0 0 160 160">
+        <rect class="box-track" x="20" y="20" width="120" height="120" rx="8"/>
+        <rect class="box-prog" id="box-prog" x="20" y="20" width="120" height="120" rx="8"
+              stroke-dasharray="480" stroke-dashoffset="480"/>
+      </svg>
+      <div class="box-center-text">
+        <div class="box-phase" id="box-phase">Ready</div>
+        <div class="box-count" id="box-count">—</div>
+      </div>
+    </div>
+    <div class="box-cycle-label" id="box-cycle-label">Press start to begin</div>
+    <div class="controls" style="justify-content:center;margin-bottom:16px;">
+      <button class="btn btn-ghost" id="box-start-btn" onclick="startBox()">Start</button>
+      <button class="btn btn-secondary" onclick="closeBox()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Grounding Overlay -->
+<div class="overlay" id="ground-overlay">
+  <div class="overlay-box">
+    <div class="ground-title">🌿 5-4-3-2-1 Grounding</div>
+    <div class="ground-sub">Anchor yourself in the present moment</div>
+    <div class="ground-progress" id="ground-progress"></div>
+    <div class="ground-number active" id="ground-number">5</div>
+    <div class="ground-sense"  id="ground-sense">Things you can SEE 👀</div>
+    <div class="ground-prompt" id="ground-prompt">Look around and name 5 things you can see right now</div>
+    <div class="ground-items"  id="ground-items"></div>
+    <div class="controls" style="justify-content:center;">
+      <button class="btn btn-primary" id="ground-next-btn" onclick="groundNext()" style="min-width:140px;">Next Sense →</button>
+      <button class="btn btn-secondary" onclick="closeGround()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Ambient Mode -->
+<div id="ambient-overlay" onclick="closeAmbient()">
+  <canvas id="ambient-canvas"></canvas>
+  <div class="ambient-content">
+    <div class="ambient-time" id="ambient-time">00:00</div>
+    <div class="ambient-quote"  id="ambient-quote-text"></div>
+    <div class="ambient-author" id="ambient-quote-auth"></div>
+    <div class="ambient-intention" id="ambient-intention-text"></div>
+  </div>
+  <div class="ambient-tap">Tap anywhere to exit</div>
 </div>
 
 <!-- Toast -->
@@ -487,7 +698,7 @@ const ALL_QUOTES = [
   { text: "Do what you feel in your heart to be right, for you'll be criticized anyway.", author: "Eleanor Roosevelt" },
   { text: "If you have good thoughts they will shine out of your face like sunbeams.", author: "Roald Dahl" },
   { text: "You are enough, a thousand times enough.", author: "Atticus" },
-  { text: "Confidence is not 'they will like me'. Confidence is 'I'll be fine if they don't'.", author: "Christina Grimmie" },
+  { text: "Confidence is knowing you will be fine no matter the outcome.", author: "Christina Grimmie" },
   { text: "The most courageous act is still to think for yourself. Aloud.", author: "Coco Chanel" },
   // Growth
   { text: "Live as if you were to die tomorrow. Learn as if you were to live forever.", author: "Mahatma Gandhi" },
@@ -870,7 +1081,7 @@ function saveIntention() {
   document.getElementById('intention-input').value = val;
   document.getElementById('intention-overlay').classList.remove('show');
   saveState();
-  if (val) showToast('✨ Intention set — own it today!');
+  if (val) showToast("✨ Intention set — own it today!");
 }
 
 document.getElementById('intention-input').addEventListener('change', saveState);
@@ -944,6 +1155,355 @@ if (!localStorage.getItem('deskfit')) {
   setTimeout(() => document.getElementById('intention-overlay').classList.add('show'), 800);
 }
 
+
+// ═══════════════════════════════════════════
+//  3 GOOD THINGS
+// ═══════════════════════════════════════════
+function openGood() {
+  document.getElementById('good1').value = '';
+  document.getElementById('good2').value = '';
+  document.getElementById('good3').value = '';
+  renderGoodHistory();
+  document.getElementById('good-overlay').classList.add('show');
+}
+
+function closeOverlay(id) {
+  document.getElementById(id).classList.remove('show');
+}
+
+function saveGood() {
+  const v1 = document.getElementById('good1').value.trim();
+  const v2 = document.getElementById('good2').value.trim();
+  const v3 = document.getElementById('good3').value.trim();
+  if (!v1 && !v2 && !v3) { showToast("Add at least one good thing!"); return; }
+  try {
+    const history = JSON.parse(localStorage.getItem('deskfit_good') || '[]');
+    const today = new Date().toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric'});
+    history.unshift({ date: today, items: [v1, v2, v3].filter(Boolean) });
+    if (history.length > 14) history.pop(); // keep 2 weeks
+    localStorage.setItem('deskfit_good', JSON.stringify(history));
+  } catch(e) {}
+  renderGoodHistory();
+  showToast("✨ Wins saved — you're building momentum!");
+  document.getElementById('good1').value = '';
+  document.getElementById('good2').value = '';
+  document.getElementById('good3').value = '';
+}
+
+function renderGoodHistory() {
+  const wrap = document.getElementById('good-history');
+  try {
+    const history = JSON.parse(localStorage.getItem('deskfit_good') || '[]');
+    if (!history.length) { wrap.innerHTML = ''; return; }
+    wrap.innerHTML = '<div class="good-history-title">Recent Wins</div>' +
+      history.slice(0, 5).map(e =>
+        `<div class="good-entry"><div class="good-entry-date">${e.date}</div>${e.items.map(i => `• ${i}`).join('<br>')}</div>`
+      ).join('');
+  } catch(e) { wrap.innerHTML = ''; }
+}
+
+// ═══════════════════════════════════════════
+//  PROGRESSIVE MUSCLE RELAXATION
+// ═══════════════════════════════════════════
+const PMR_STEPS = [
+  { name: "Feet & Toes",     detail: "Curl your toes tightly — feel the tension build",  tenseSec: 5, relaxSec: 10 },
+  { name: "Calves",          detail: "Point your feet down, flex your calves hard",       tenseSec: 5, relaxSec: 10 },
+  { name: "Thighs",          detail: "Squeeze your thighs together firmly",               tenseSec: 5, relaxSec: 10 },
+  { name: "Glutes",          detail: "Clench both glutes as tight as you can",            tenseSec: 5, relaxSec: 10 },
+  { name: "Abdomen",         detail: "Pull your belly button in toward your spine",       tenseSec: 5, relaxSec: 10 },
+  { name: "Hands & Fists",   detail: "Make tight fists, squeeze every finger",           tenseSec: 5, relaxSec: 10 },
+  { name: "Forearms",        detail: "Flex your forearms, hold that tension",             tenseSec: 5, relaxSec: 10 },
+  { name: "Upper Arms",      detail: "Flex your biceps like a bodybuilder pose",         tenseSec: 5, relaxSec: 10 },
+  { name: "Shoulders",       detail: "Shrug your shoulders up to your ears",             tenseSec: 5, relaxSec: 10 },
+  { name: "Chest",           detail: "Take a deep breath in, hold it, expand your chest", tenseSec: 5, relaxSec: 10 },
+  { name: "Upper Back",      detail: "Pull your shoulder blades together hard",          tenseSec: 5, relaxSec: 10 },
+  { name: "Neck",            detail: "Gently press your head back against a support",    tenseSec: 5, relaxSec: 10 },
+  { name: "Face & Jaw",      detail: "Clench your jaw, scrunch your face muscles",       tenseSec: 5, relaxSec: 10 },
+  { name: "Full Body",       detail: "Tense every muscle at once — the grand finale!",   tenseSec: 5, relaxSec: 15 },
+];
+
+let pmrStep = -1, pmrPhase = 'idle', pmrTimer = null, pmrRunning = false;
+
+function openPMR() {
+  pmrStep = -1; pmrPhase = 'idle'; pmrRunning = false;
+  document.getElementById('pmr-body').textContent = 'Press Start to begin';
+  document.getElementById('pmr-detail').textContent = 'Work from feet up through your whole body';
+  document.getElementById('pmr-bar').style.width = '0%';
+  document.getElementById('pmr-step-label').textContent = '0 / ' + PMR_STEPS.length;
+  document.getElementById('pmr-start-btn').textContent = 'Start';
+  document.getElementById('pmr-overlay').classList.add('show');
+}
+
+function closePMR() {
+  clearTimeout(pmrTimer); pmrRunning = false;
+  document.getElementById('pmr-overlay').classList.remove('show');
+}
+
+function startPMR() {
+  if (pmrRunning) { clearTimeout(pmrTimer); pmrRunning = false; document.getElementById('pmr-start-btn').textContent = 'Resume'; return; }
+  pmrRunning = true;
+  document.getElementById('pmr-start-btn').textContent = 'Pause';
+  if (pmrStep === -1) pmrStep = 0;
+  runPMRStep();
+}
+
+function runPMRStep() {
+  if (!pmrRunning || pmrStep >= PMR_STEPS.length) {
+    if (pmrStep >= PMR_STEPS.length) {
+      document.getElementById('pmr-body').textContent = '🌟 Complete!';
+      document.getElementById('pmr-detail').textContent = 'Your whole body is relaxed. Breathe naturally.';
+      document.getElementById('pmr-bar').style.width = '100%';
+      document.getElementById('pmr-start-btn').textContent = 'Done';
+      pmrRunning = false;
+    }
+    return;
+  }
+  const step = PMR_STEPS[pmrStep];
+  const total = PMR_STEPS.length;
+  document.getElementById('pmr-step-label').textContent = `${pmrStep + 1} / ${total}`;
+  document.getElementById('pmr-bar').style.width = `${((pmrStep) / total) * 100}%`;
+
+  // Tense phase
+  document.getElementById('pmr-body').textContent = `TENSE: ${step.name}`;
+  document.getElementById('pmr-detail').textContent = step.detail;
+  let t = step.tenseSec;
+  const tenseTick = () => {
+    if (!pmrRunning) return;
+    document.getElementById('pmr-detail').textContent = `${step.detail} — hold for ${t}s`;
+    if (t <= 0) {
+      // Relax phase
+      document.getElementById('pmr-body').textContent = `RELAX: ${step.name}`;
+      let r = step.relaxSec;
+      const relaxTick = () => {
+        if (!pmrRunning) return;
+        document.getElementById('pmr-detail').textContent = `Release completely — feel the difference for ${r}s`;
+        if (r <= 0) { pmrStep++; runPMRStep(); return; }
+        r--;
+        pmrTimer = setTimeout(relaxTick, 1000);
+      };
+      relaxTick();
+      return;
+    }
+    t--;
+    pmrTimer = setTimeout(tenseTick, 1000);
+  };
+  tenseTick();
+}
+
+// ═══════════════════════════════════════════
+//  BOX BREATHING
+// ═══════════════════════════════════════════
+let boxRunning = false, boxTimer = null;
+
+function openBox() {
+  document.getElementById('box-phase').textContent = 'Ready';
+  document.getElementById('box-count').textContent = '—';
+  document.getElementById('box-cycle-label').textContent = 'Press start to begin';
+  document.getElementById('box-prog').style.strokeDashoffset = '480';
+  document.getElementById('box-start-btn').textContent = 'Start';
+  boxRunning = false;
+  document.getElementById('box-overlay').classList.add('show');
+}
+
+function closeBox() {
+  clearTimeout(boxTimer); boxRunning = false;
+  document.getElementById('box-overlay').classList.remove('show');
+}
+
+function startBox() {
+  if (boxRunning) { clearTimeout(boxTimer); boxRunning = false; document.getElementById('box-start-btn').textContent = 'Start'; return; }
+  boxRunning = true;
+  document.getElementById('box-start-btn').textContent = 'Stop';
+  let cycle = 0;
+  runBoxCycle(cycle);
+  // 4+4+4+4 = 16s per cycle
+  const cycleFn = () => {
+    if (!boxRunning) return;
+    cycle++;
+    runBoxCycle(cycle);
+    boxTimer = setTimeout(cycleFn, 16000);
+  };
+  boxTimer = setTimeout(cycleFn, 16000);
+}
+
+function runBoxCycle(cycle) {
+  document.getElementById('box-cycle-label').textContent = `Cycle ${cycle + 1}`;
+  const prog = document.getElementById('box-prog');
+  const phases = [
+    { label: 'Inhale',  color: 'var(--accent2)', offset: 360 },
+    { label: 'Hold',    color: '#c060f0',         offset: 240 },
+    { label: 'Exhale',  color: 'var(--accent3)',  offset: 120 },
+    { label: 'Hold',    color: '#f0c860',          offset: 0   },
+  ];
+  phases.forEach((p, i) => {
+    setTimeout(() => {
+      if (!boxRunning) return;
+      document.getElementById('box-phase').textContent = p.label;
+      prog.style.stroke = p.color;
+      prog.style.strokeDashoffset = p.offset;
+      let n = 4;
+      document.getElementById('box-count').textContent = n;
+      const tick = setInterval(() => {
+        if (!boxRunning) { clearInterval(tick); return; }
+        n--;
+        document.getElementById('box-count').textContent = n > 0 ? n : '';
+        if (n <= 0) clearInterval(tick);
+      }, 1000);
+    }, i * 4000);
+  });
+}
+
+// ═══════════════════════════════════════════
+//  5-4-3-2-1 GROUNDING
+// ═══════════════════════════════════════════
+const GROUND_STEPS = [
+  { n: 5, sense: 'Things you can SEE 👀',   prompt: 'Look around — name 5 things you can see right now', color: 'var(--accent)' },
+  { n: 4, sense: 'Things you can TOUCH 🤚', prompt: 'Feel your surroundings — name 4 textures or surfaces', color: 'var(--accent2)' },
+  { n: 3, sense: 'Things you can HEAR 👂',  prompt: 'Listen carefully — name 3 sounds around you', color: '#c060f0' },
+  { n: 2, sense: 'Things you can SMELL 👃', prompt: 'Take a breath — name 2 scents you notice (or recall)', color: '#f0c860' },
+  { n: 1, sense: 'Thing you can TASTE 👅',  prompt: 'Notice your mouth — name 1 taste you are aware of', color: 'var(--accent3)' },
+];
+let groundStep = 0;
+
+function openGround() {
+  groundStep = 0;
+  buildGroundProgress();
+  renderGroundStep();
+  document.getElementById('ground-overlay').classList.add('show');
+}
+
+function closeGround() {
+  document.getElementById('ground-overlay').classList.remove('show');
+}
+
+function buildGroundProgress() {
+  const wrap = document.getElementById('ground-progress');
+  wrap.innerHTML = GROUND_STEPS.map((s, i) =>
+    `<div class="ground-step-dot ${i === groundStep ? 'active' : ''}" id="gsdot${i}">${s.n}</div>`
+  ).join('');
+}
+
+function renderGroundStep() {
+  const s = GROUND_STEPS[groundStep];
+  const numEl = document.getElementById('ground-number');
+  numEl.classList.remove('active');
+  setTimeout(() => { numEl.textContent = s.n; numEl.classList.add('active'); }, 50);
+  document.getElementById('ground-sense').textContent = s.sense;
+  document.getElementById('ground-prompt').textContent = s.prompt;
+
+  const items = document.getElementById('ground-items');
+  items.innerHTML = '';
+  for (let i = 0; i < s.n; i++) {
+    const row = document.createElement('div');
+    row.className = 'ground-item-row';
+    row.innerHTML = `<div class="ground-dot" id="gdot${i}"></div>
+      <input class="ground-item-input" placeholder="Name something..." oninput="checkGroundDot(${i}, this)">`;
+    items.appendChild(row);
+  }
+  document.getElementById('ground-next-btn').textContent = groundStep < GROUND_STEPS.length - 1 ? 'Next Sense →' : '✨ Complete';
+}
+
+function checkGroundDot(i, el) {
+  const dot = document.getElementById('gdot' + i);
+  if (el.value.trim()) dot.classList.add('done');
+  else dot.classList.remove('done');
+}
+
+function groundNext() {
+  if (groundStep < GROUND_STEPS.length - 1) {
+    // Mark current dot done
+    document.getElementById('gsdot' + groundStep).className = 'ground-step-dot done-step';
+    groundStep++;
+    document.getElementById('gsdot' + groundStep).className = 'ground-step-dot active';
+    renderGroundStep();
+  } else {
+    document.getElementById('gsdot' + groundStep).className = 'ground-step-dot done-step';
+    closeGround();
+    showToast("🌿 Grounded and present. You've got this.");
+  }
+}
+
+// ═══════════════════════════════════════════
+//  AMBIENT MODE
+// ═══════════════════════════════════════════
+let ambientTimer = null, ambientCanvas = null, ambientCtx = null;
+let ambientOrbs = [];
+let ambientQuoteTimer = null;
+
+function openAmbient() {
+  document.getElementById('ambient-overlay').classList.add('show');
+  setupAmbientCanvas();
+  updateAmbientTime();
+  setAmbientQuote();
+  const intent = document.getElementById('intention-input').value.trim();
+  document.getElementById('ambient-intention-text').textContent = intent ? `✦  ${intent}  ✦` : '';
+  ambientTimer = setInterval(updateAmbientTime, 1000);
+  ambientQuoteTimer = setInterval(setAmbientQuote, 30000);
+}
+
+function closeAmbient() {
+  document.getElementById('ambient-overlay').classList.remove('show');
+  clearInterval(ambientTimer);
+  clearInterval(ambientQuoteTimer);
+  if (ambientCtx) ambientCtx.clearRect(0, 0, ambientCanvas.width, ambientCanvas.height);
+}
+
+function updateAmbientTime() {
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2, '0');
+  const m = String(now.getMinutes()).padStart(2, '0');
+  document.getElementById('ambient-time').textContent = `${h}:${m}`;
+}
+
+function setAmbientQuote() {
+  const q = nextQuote();
+  document.getElementById('ambient-quote-text').textContent = `"${q.text}"`;
+  document.getElementById('ambient-quote-auth').textContent = `— ${q.author}`;
+}
+
+function setupAmbientCanvas() {
+  ambientCanvas = document.getElementById('ambient-canvas');
+  ambientCtx = ambientCanvas.getContext('2d');
+  ambientCanvas.width  = window.innerWidth;
+  ambientCanvas.height = window.innerHeight;
+  const W = ambientCanvas.width, H = ambientCanvas.height;
+  const colors = [
+    'rgba(200,240,96,', 'rgba(96,200,240,', 'rgba(240,96,168,',
+    'rgba(240,200,96,', 'rgba(192,96,240,'
+  ];
+  ambientOrbs = Array.from({length: 5}, (_, i) => ({
+    x: Math.random() * W, y: Math.random() * H,
+    vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4,
+    r: Math.random() * 200 + 150,
+    color: colors[i % colors.length],
+    alpha: Math.random() * 0.03 + 0.02,
+  }));
+  drawAmbient();
+}
+
+function drawAmbient() {
+  if (!document.getElementById('ambient-overlay').classList.contains('show')) return;
+  const W = ambientCanvas.width, H = ambientCanvas.height;
+  ambientCtx.clearRect(0, 0, W, H);
+  ambientCtx.fillStyle = '#0a0a0b';
+  ambientCtx.fillRect(0, 0, W, H);
+  ambientOrbs.forEach(o => {
+    const grad = ambientCtx.createRadialGradient(o.x, o.y, 0, o.x, o.y, o.r);
+    grad.addColorStop(0, o.color + o.alpha + ')');
+    grad.addColorStop(1, o.color + '0)');
+    ambientCtx.beginPath();
+    ambientCtx.arc(o.x, o.y, o.r, 0, Math.PI * 2);
+    ambientCtx.fillStyle = grad;
+    ambientCtx.fill();
+    o.x += o.vx; o.y += o.vy;
+    if (o.x < -o.r) o.x = W + o.r;
+    if (o.x > W + o.r) o.x = -o.r;
+    if (o.y < -o.r) o.y = H + o.r;
+    if (o.y > H + o.r) o.y = -o.r;
+  });
+  requestAnimationFrame(drawAmbient);
+}
+
 // ═══════════════════════════════════════════
 //  PWA INSTALL PROMPT
 // ═══════════════════════════════════════════
@@ -953,18 +1513,18 @@ window.addEventListener('beforeinstallprompt', e => {
   deferredPrompt = e;
   // Show a subtle install nudge after 10 seconds
   setTimeout(() => {
-    if (deferredPrompt) showToast('📲 Tip: Install as app via browser menu → Add to Home Screen');
+    if (deferredPrompt) showToast("📲 Tip: Install as app via browser menu → Add to Home Screen");
   }, 10000);
 });
 window.addEventListener('appinstalled', () => {
-  showToast('✅ DeskFit installed! Find it on your home screen.');
+  showToast("✅ DeskFit installed! Find it on your home screen.");
   deferredPrompt = null;
 });
 
 // ═══════════════════════════════════════════
 //  SERVICE WORKER (inline blob — enables offline + PWA install)
 // ═══════════════════════════════════════════
-if ('serviceWorker' in navigator) {
+if ('serviceWorker' in navigator && location.protocol !== 'file:') {
   const swCode = `
     const CACHE = 'deskfit-v1';
     const FONTS = [
