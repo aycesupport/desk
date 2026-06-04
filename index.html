@@ -564,6 +564,31 @@
   <div class="ambient-tap">Tap anywhere to exit</div>
 </div>
 
+<!-- Exercise Detail Modal -->
+<div class="overlay" id="ex-modal">
+  <div class="overlay-box">
+    <div class="ex-modal-header">
+      <div class="ex-modal-icon" id="ex-modal-icon">💪</div>
+      <div>
+        <div class="ex-modal-title" id="ex-modal-title">Exercise</div>
+        <div class="ex-modal-intensity" id="ex-modal-intensity"></div>
+      </div>
+    </div>
+    <div class="ex-modal-body">
+      <div class="ex-info">
+        <div class="ex-steps-title">How to do it</div>
+        <div id="ex-steps"></div>
+      </div>
+    </div>
+    <div class="ex-muscles" id="ex-muscles"></div>
+    <div class="ex-tip">
+      <div class="ex-tip-label">💡 Pro Tip</div>
+      <div id="ex-tip-text"></div>
+    </div>
+    <button class="btn btn-primary" style="width:100%" onclick="closeOverlay('ex-modal')">Got it!</button>
+  </div>
+</div>
+
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
@@ -620,7 +645,340 @@ const ALL_EXERCISES = [
   { name: "Squat Pulses", icon: "📳", detail: "Hold squat, pulse 20 reps", intensity: "high" },
   { name: "Invisible Jump Rope", icon: "🪢", detail: "45 seconds continuous", intensity: "high" },
   { name: "Lateral Hops", icon: "🐇", detail: "20 hops side to side", intensity: "high" },
+  // ─ New Gentle ─
+  { name: "Standing Quad Stretch", icon: "🦵", detail: "Hold 25 sec each leg", intensity: "low" },
+  { name: "Hamstring Stretch", icon: "🏃", detail: "Hold 25 sec each leg on chair", intensity: "low" },
+  { name: "Cross-Body Shoulder", icon: "🤗", detail: "Hold 20 sec each arm", intensity: "low" },
+  { name: "Overhead Tricep Stretch", icon: "💆", detail: "Hold 20 sec each arm", intensity: "low" },
+  { name: "Neck Isometrics", icon: "🗿", detail: "5 sec hold each direction, 8 reps", intensity: "low" },
+  { name: "Seated Pigeon Pose", icon: "🧘", detail: "Hold 30 sec each side", intensity: "low" },
+  // ─ New Moderate ─
+  { name: "Sumo Squat", icon: "🏋", detail: "15 reps, wide stance toes out", intensity: "med" },
+  { name: "Incline Push-Up", icon: "📐", detail: "15 reps on chair or desk", intensity: "med" },
+  { name: "Superman Hold", icon: "🦸", detail: "Hold 10 sec, 8 reps lying face down", intensity: "med" },
+  // ─ New Intense ─
+  { name: "Full Burpee", icon: "💥", detail: "8 reps full movement with push-up", intensity: "high" },
+  { name: "Tuck Jumps", icon: "🦊", detail: "10 reps, knees to chest", intensity: "high" },
+  { name: "Skaters", icon: "⛸", detail: "20 reps lateral bounds", intensity: "high" },
+  { name: "Sprint in Place", icon: "🔋", detail: "20 seconds maximum effort", intensity: "high" },
+  { name: "Inchworm", icon: "🐛", detail: "8 reps walk out to plank and back", intensity: "high" },
+  { name: "Glute Bridge", icon: "🌉", detail: "15 reps on floor, hold 2 sec", intensity: "med" },
+  { name: "Bird Dog", icon: "🦅", detail: "10 reps each side on all fours", intensity: "med" },
+  { name: "Dead Bug", icon: "🪲", detail: "10 alternating reps on floor", intensity: "med" },
 ];
+
+const EXERCISE_ANIMS = {
+  "Neck Rolls": {
+    steps: ["Sit tall, drop right ear to shoulder gently", "Slowly roll head forward, then left ear to shoulder", "Continue the full circle, pause where tight", "Reverse direction 5x each side"],
+    muscles: ["Neck extensors", "SCM", "Upper traps"],
+    tip: "Never roll your head fully backward — keep it forward only."
+  },
+  "Shoulder Shrugs": {
+    steps: ["Stand or sit with arms relaxed at sides", "Raise both shoulders up toward your ears", "Hold at the top for 3 seconds", "Drop shoulders down and relax completely"],
+    muscles: ["Upper trapezius", "Levator scapulae"],
+    tip: "Focus on the release — that's where the benefit is."
+  },
+  "Spinal Twist": {
+    steps: ["Sit upright with feet flat on floor", "Place right hand on left knee", "Inhale to grow tall, exhale to rotate left", "Hold 15–20 seconds each side"],
+    muscles: ["Spinal rotators", "Obliques", "Thoracic spine"],
+    tip: "Rotate from your mid-back, not just your neck."
+  },
+  "Chest Opener": {
+    steps: ["Interlace fingers behind your back", "Gently squeeze shoulder blades together", "Lift hands slightly away from body", "Hold 15 seconds, repeat 3 times"],
+    muscles: ["Pectorals", "Front deltoids", "Biceps"],
+    tip: "Keep your chin level — don't let your head jut forward."
+  },
+  "Seated Leg Raises": {
+    steps: ["Sit upright at the edge of your chair", "Straighten one leg until parallel to floor", "Hold for 3–5 seconds, squeeze quads", "Lower slowly and repeat on other leg"],
+    muscles: ["Quadriceps", "Hip flexors", "Core"],
+    tip: "Flex your foot (toes toward you) for a bonus calf stretch."
+  },
+  "Calf Raises": {
+    steps: ["Stand behind chair, use it for light balance", "Rise up onto balls of both feet", "Hold at the top for 1 second", "Lower slowly over 2–3 seconds"],
+    muscles: ["Gastrocnemius", "Soleus"],
+    tip: "Do the last few reps single-legged for more challenge."
+  },
+  "Hip Flexor Stretch": {
+    steps: ["Step forward into a wide lunge", "Lower back knee toward floor", "Push hips forward gently until you feel a stretch", "Hold 20–30 seconds each side"],
+    muscles: ["Psoas", "Iliacus", "Rectus femoris"],
+    tip: "This counteracts sitting all day — the most important stretch for desk workers."
+  },
+  "Wrist Circles": {
+    steps: ["Extend both arms in front of you", "Make loose fists", "Rotate wrists in full circles slowly", "10 rotations each direction"],
+    muscles: ["Wrist flexors", "Wrist extensors", "Forearm rotators"],
+    tip: "If you type a lot, do this hourly — it prevents repetitive strain."
+  },
+  "Eye Focus Reset": {
+    steps: ["Hold a finger 10cm from your face", "Focus on it for 3 seconds", "Look at something 6 metres away for 3 seconds", "Alternate 10 times"],
+    muscles: ["Ciliary muscles", "Eye focus muscles"],
+    tip: "Follow the 20-20-20 rule: every 20 min, look 20 feet away for 20 seconds."
+  },
+  "Figure-Four Stretch": {
+    steps: ["Sit upright in chair", "Cross right ankle over left knee", "Gently press right knee down", "Lean forward slightly to deepen stretch"],
+    muscles: ["Piriformis", "Glutes", "IT band"],
+    tip: "If you feel it in your knee rather than glute, ease off the press."
+  },
+  "Ankle Circles": {
+    steps: ["Lift one foot slightly off the floor", "Rotate ankle in slow full circles", "10 rotations clockwise then counter-clockwise", "Switch feet and repeat"],
+    muscles: ["Ankle stabilisers", "Lower leg muscles"],
+    tip: "Sitting compresses circulation — ankle circles pump blood back up."
+  },
+  "Overhead Reach": {
+    steps: ["Interlace fingers, palms facing ceiling", "Press arms straight up overhead", "Lean gently left, hold 5 seconds", "Lean right, hold 5 seconds, repeat 5 times"],
+    muscles: ["Latissimus dorsi", "Shoulders", "Intercostals"],
+    tip: "Take a deep breath as you reach up to open the ribcage."
+  },
+  "Seated Cat-Cow": {
+    steps: ["Sit at edge of chair, hands on knees", "Inhale: arch your lower back, lift chest (cow)", "Exhale: round your spine, tuck chin (cat)", "Flow slowly through 10 breath cycles"],
+    muscles: ["Erector spinae", "Multifidus", "Abdominals"],
+    tip: "Let your breath guide the movement — inhale to arch, exhale to round."
+  },
+  "Forearm Stretch": {
+    steps: ["Extend right arm, palm facing up", "With left hand gently bend fingers down", "Hold 15 seconds, feel the forearm stretch", "Flip palm down and repeat on the other side"],
+    muscles: ["Wrist flexors", "Pronator muscles"],
+    tip: "Essential if you use a mouse all day — prevents carpal tunnel."
+  },
+  "Glute Squeezes": {
+    steps: ["Sit upright or stand at your desk", "Squeeze both glutes as hard as you can", "Hold for 5 seconds", "Release completely and repeat 15 times"],
+    muscles: ["Gluteus maximus", "Gluteus medius"],
+    tip: "Sitting weakens your glutes — this reactivates them without standing up."
+  },
+  "Ear to Shoulder": {
+    steps: ["Sit tall, relax both shoulders down", "Slowly tilt right ear toward right shoulder", "Stop when you feel a stretch, hold 20 seconds", "Lift head back up, repeat on left side"],
+    muscles: ["Lateral neck muscles", "Upper trapezius"],
+    tip: "Never force the stretch with your hand — gravity is enough."
+  },
+  "Finger Stretches": {
+    steps: ["Hold hands in front of you", "Spread all fingers as wide as possible", "Hold fully spread for 5 seconds", "Make a tight fist, then release and repeat"],
+    muscles: ["Finger extensors", "Intrinsic hand muscles"],
+    tip: "Great for gamers and typists — do this every hour."
+  },
+  "Seated Forward Fold": {
+    steps: ["Sit at edge of chair, feet flat", "Hinge forward at the hips (not the waist)", "Let arms hang toward the floor", "Hold 20–30 seconds, breathe deeply"],
+    muscles: ["Hamstrings", "Lower back", "Glutes"],
+    tip: "Bend from your hips, not your upper back, to get a true hamstring stretch."
+  },
+  "Desk Push-Ups": {
+    steps: ["Stand arm's length from desk, grip edge", "Lower chest toward desk, elbows at 45°", "Push back to start with full arm extension", "Complete 15–20 reps at controlled pace"],
+    muscles: ["Pectorals", "Triceps", "Front deltoids", "Core"],
+    tip: "The further your feet are from the desk, the harder it gets."
+  },
+  "Chair Squats": {
+    steps: ["Stand in front of chair, feet shoulder-width", "Hinge hips back and bend knees", "Lower until you lightly touch the seat", "Drive through heels to stand back up"],
+    muscles: ["Quadriceps", "Glutes", "Hamstrings", "Core"],
+    tip: "Keep your weight in your heels — you should be able to wiggle your toes."
+  },
+  "Tricep Dips": {
+    steps: ["Sit at edge of chair, grip seat beside hips", "Slide hips off, arms straight, legs extended", "Bend elbows to lower body toward floor", "Push through palms to straighten arms"],
+    muscles: ["Triceps", "Anterior deltoids", "Chest"],
+    tip: "Keep your back close to the chair — drifting forward shifts load to shoulders."
+  },
+  "Standing March": {
+    steps: ["Stand with good posture behind your chair", "Lift right knee to hip height", "Lower and lift left knee", "Continue alternating for 30 seconds"],
+    muscles: ["Hip flexors", "Core", "Quadriceps"],
+    tip: "Pump your arms opposite to your legs for full coordination."
+  },
+  "Torso Rotations": {
+    steps: ["Stand feet shoulder-width, arms out at sides", "Rotate your torso fully to the right", "Then fully to the left in one smooth motion", "Complete 20 controlled rotations"],
+    muscles: ["Obliques", "Spinal rotators", "Core"],
+    tip: "Let your hips follow slightly but keep feet planted."
+  },
+  "Lateral Arm Raises": {
+    steps: ["Stand with arms at sides, slight bend in elbows", "Raise both arms out to shoulder height", "Hold 1 second at the top", "Lower slowly over 3 seconds"],
+    muscles: ["Medial deltoid", "Supraspinatus", "Upper traps"],
+    tip: "Lead with your elbows, not your hands, to protect the shoulder joint."
+  },
+  "Side Lunges": {
+    steps: ["Stand with feet together", "Step wide to the right, bending right knee", "Keep left leg straight, push hips back", "Push off right foot back to center and repeat"],
+    muscles: ["Glutes", "Adductors", "Quadriceps"],
+    tip: "Keep your foot pointing forward and your knee tracking over your toes."
+  },
+  "Standing Toe Touch": {
+    steps: ["Stand with feet hip-width apart", "Hinge forward at the hips with soft knees", "Reach toward the floor or your shins", "Hold 3 seconds, roll back up slowly"],
+    muscles: ["Hamstrings", "Lower back", "Calves"],
+    tip: "Soft knees protect your lower back — this is not a locked-leg exercise."
+  },
+  "Resistance Band Row": {
+    steps: ["Anchor band under feet or to a door handle", "Hold handles, start with arms extended", "Pull elbows back squeezing shoulder blades", "Slowly extend arms back to start"],
+    muscles: ["Rhomboids", "Middle traps", "Rear deltoids", "Biceps"],
+    tip: "Think about putting your elbows in your back pockets."
+  },
+  "Shadow Boxing": {
+    steps: ["Adopt a slight stance with hands up", "Throw a jab (straight lead hand)", "Follow with a cross (power rear hand)", "Continue jab-cross combos for 30 seconds"],
+    muscles: ["Shoulders", "Core", "Arms", "Cardiovascular"],
+    tip: "Rotate your torso on every punch — the power comes from the hips."
+  },
+  "Step Taps": {
+    steps: ["Stand with feet together", "Step right foot out to the side, tap floor", "Step back to center", "Alternate sides continuously for 30 seconds"],
+    muscles: ["Hip abductors", "Inner thighs", "Cardiovascular"],
+    tip: "Keep it rhythmic — you can add arm swings for more calorie burn."
+  },
+  "Standing Hip Circles": {
+    steps: ["Stand feet shoulder-width, hands on hips", "Move hips in a large slow circle", "Complete 10 circles one direction", "Reverse for 10 circles the other way"],
+    muscles: ["Hip rotators", "Glutes", "Core"],
+    tip: "Make the circle as large as comfortable — exaggerate the movement."
+  },
+  "Reverse Lunges": {
+    steps: ["Stand with feet together", "Step one foot backward, lower back knee", "Front thigh should be near parallel", "Push off back foot to return, switch legs"],
+    muscles: ["Quadriceps", "Glutes", "Hamstrings", "Balance"],
+    tip: "Reverse lunges are easier on the knee than forward lunges."
+  },
+  "Seated Bicycle": {
+    steps: ["Sit at edge of chair, lean back slightly", "Lift both feet off floor", "Alternate bringing each knee toward chest", "Opposite elbow to knee for full core rotation"],
+    muscles: ["Obliques", "Hip flexors", "Core", "Rectus abdominis"],
+    tip: "Go slowly — the slower the movement, the harder your core works."
+  },
+  "Standing Calf Stretch": {
+    steps: ["Stand arm's length from wall, hands on wall", "Step one foot back, heel firmly on floor", "Lean gently into wall until you feel the stretch", "Hold 20–30 seconds each side"],
+    muscles: ["Gastrocnemius", "Soleus", "Achilles tendon"],
+    tip: "Bend the back knee slightly to shift the stretch to the deeper soleus muscle."
+  },
+  "Wall Sit": {
+    steps: ["Stand with back against a smooth wall", "Slide down until thighs are parallel to floor", "Knees should be directly over ankles", "Hold the position — breathe steadily"],
+    muscles: ["Quadriceps", "Glutes", "Hamstrings", "Core"],
+    tip: "Focus on a fixed point ahead of you. Time yourself and beat it each session."
+  },
+  "Plank Hold": {
+    steps: ["Start on forearms and toes or hands", "Body forms a straight line head to heels", "Engage core, squeeze glutes, breathe", "Hold for 30–60 seconds"],
+    muscles: ["Core", "Transverse abdominis", "Shoulders", "Glutes"],
+    tip: "If your hips sag or rise, the benefit drops. Reset your form."
+  },
+  "High Knees": {
+    steps: ["Run in place lifting knees to hip height", "Pump arms vigorously opposite to legs", "Land softly on balls of feet", "Maintain for 30 seconds full effort"],
+    muscles: ["Hip flexors", "Quads", "Core", "Cardiovascular"],
+    tip: "The higher the knees, the harder the core works."
+  },
+  "Broad Jumps": {
+    steps: ["Stand with feet shoulder-width", "Bend knees and swing arms back", "Explode forward, landing softly in a squat", "Walk back to start, repeat 5–10 times"],
+    muscles: ["Glutes", "Quadriceps", "Calves", "Core"],
+    tip: "Land through heel-to-toe to absorb force and protect your knees."
+  },
+  "Half Burpee": {
+    steps: ["Start standing, feet shoulder-width", "Bend and place hands on floor", "Jump both feet back to plank position", "Jump feet back to hands and stand"],
+    muscles: ["Full body", "Cardiovascular", "Core", "Arms"],
+    tip: "Keep your core braced throughout — don't let your lower back sag in plank."
+  },
+  "Mountain Climbers": {
+    steps: ["Start in a high plank, wrists under shoulders", "Drive right knee toward chest", "Quickly switch, driving left knee forward", "Alternate rapidly for 20 reps each leg"],
+    muscles: ["Core", "Hip flexors", "Shoulders", "Cardiovascular"],
+    tip: "Keep hips level — don't let them rise with each leg drive."
+  },
+  "Jump Squats": {
+    steps: ["Squat down, thighs near parallel", "Drive explosively through heels", "Leave the ground at full extension", "Land softly, absorbing through your legs"],
+    muscles: ["Glutes", "Quads", "Calves", "Core", "Cardiovascular"],
+    tip: "Land quieter than you take off — silent landing means good mechanics."
+  },
+  "Speed Step Taps": {
+    steps: ["Stand in front of a step or low object", "Alternate tapping feet on top of it rapidly", "Keep core engaged and posture upright", "Drive arms to maintain rhythm"],
+    muscles: ["Cardiovascular", "Quads", "Calves", "Coordination"],
+    tip: "Start slow to get the rhythm right, then build speed."
+  },
+  "Push-Up to T": {
+    steps: ["Start in high plank position", "Perform one full push-up", "At the top, rotate into side plank (left arm up)", "Return and repeat, rotating to opposite side"],
+    muscles: ["Chest", "Shoulders", "Obliques", "Core stability"],
+    tip: "Move as one rigid unit — hips don't drop when you rotate."
+  },
+  "Squat Pulses": {
+    steps: ["Lower into squat position, thighs parallel", "Stay low — don't come all the way up", "Pulse up and down just a few inches", "Complete 20 pulses feeling the burn"],
+    muscles: ["Quadriceps", "Glutes", "Hamstrings — isometric hold"],
+    tip: "The constant tension without rest is what makes these so effective."
+  },
+  "Invisible Jump Rope": {
+    steps: ["Stand with feet slightly apart", "Rotate wrists as if holding a jump rope", "Jump 1–2 inches off the ground continuously", "Stay on balls of feet for 45 seconds"],
+    muscles: ["Calves", "Cardiovascular", "Coordination", "Core"],
+    tip: "Focus on wrist rotation and soft landings — it becomes meditative."
+  },
+  "Lateral Hops": {
+    steps: ["Stand with feet together", "Hop sideways to the right, landing on both feet", "Hop back to the left", "Continue 20 hops with good posture"],
+    muscles: ["Abductors", "Adductors", "Calves", "Cardiovascular"],
+    tip: "Keep knees soft on landing to protect joints."
+  },
+  "Sumo Squat": {
+    steps: ["Stand with feet wide, toes turned out 45°", "Lower down keeping chest up and back straight", "Knees track in line with toes", "Drive through heels back to start for 15 reps"],
+    muscles: ["Inner thighs", "Glutes", "Quads"],
+    tip: "The wide stance targets inner thigh in a way regular squats don't."
+  },
+  "Glute Bridge": {
+    steps: ["Lie on back, knees bent, feet flat on floor", "Press through heels and drive hips up", "Squeeze glutes hard at the top for 2 seconds", "Lower slowly and repeat 15 times"],
+    muscles: ["Gluteus maximus", "Hamstrings", "Core"],
+    tip: "If you feel it in your lower back, push through your heels more."
+  },
+  "Bird Dog": {
+    steps: ["Start on hands and knees, neutral spine", "Extend right arm forward, left leg back simultaneously", "Hold 3 seconds, keeping hips level", "Return and switch to left arm, right leg"],
+    muscles: ["Core", "Glutes", "Lower back", "Coordination"],
+    tip: "The goal is a perfectly flat back — imagine balancing a glass of water on it."
+  },
+  "Dead Bug": {
+    steps: ["Lie on back, arms up straight, knees at 90°", "Lower right arm and left leg simultaneously", "Keep lower back pressed into floor throughout", "Return and alternate sides — 10 each side"],
+    muscles: ["Deep core", "Transverse abdominis", "Hip flexors"],
+    tip: "If your back arches off the floor, reduce the range of motion."
+  },
+  "Superman Hold": {
+    steps: ["Lie face down, arms extended overhead", "Simultaneously lift arms, chest, and legs", "Hold 10 seconds at the top", "Lower slowly and rest 5 seconds, 8 reps"],
+    muscles: ["Erector spinae", "Glutes", "Rear deltoids", "Hamstrings"],
+    tip: "Focus on lengthening rather than height — reach your fingers forward and toes back."
+  },
+  "Inchworm": {
+    steps: ["Stand tall, hinge at hips to floor", "Walk hands forward to plank position", "Hold 2 seconds in plank", "Walk hands back to feet and stand tall — repeat"],
+    muscles: ["Hamstrings", "Core", "Shoulders", "Full body"],
+    tip: "Keep your knees as straight as flexibility allows to maximise the hamstring stretch."
+  },
+  "Full Burpee": {
+    steps: ["Squat, place hands on floor", "Jump feet back to plank", "Lower chest to floor (push-up)", "Push up, jump feet to hands, jump up with arms overhead"],
+    muscles: ["Full body", "Cardiovascular — maximum effort"],
+    tip: "Break into sets of 3–5 rather than grinding through poor form."
+  },
+  "Tuck Jumps": {
+    steps: ["Stand feet shoulder-width", "Bend knees and explode upward", "Drive knees toward chest at peak", "Land softly, absorb through legs"],
+    muscles: ["Quads", "Glutes", "Core", "Cardiovascular"],
+    tip: "Aim for knee height at chest — quality over speed."
+  },
+  "Skaters": {
+    steps: ["Start standing on right leg", "Bound laterally to left leg, right leg sweeps behind", "Touch down briefly and bound back right", "Continue rhythmically for 20 reps each side"],
+    muscles: ["Glutes", "Abductors", "Cardiovascular", "Balance"],
+    tip: "The longer the bound, the more the glutes work."
+  },
+  "Sprint in Place": {
+    steps: ["Drive knees up rapidly, maximum effort", "Pump arms vigorously as if sprinting", "Stay on balls of feet throughout", "Give max effort for 20 seconds"],
+    muscles: ["Cardiovascular", "Full lower body", "Core"],
+    tip: "This is your maximum effort — treat it like the last 20 seconds of a race."
+  },
+  "Incline Push-Up": {
+    steps: ["Place hands on chair seat or low desk", "Walk feet back to a plank-like position", "Lower chest toward surface", "Push back to start — 15 reps"],
+    muscles: ["Chest", "Triceps", "Core", "Shoulders"],
+    tip: "Lower than desk push-ups — increases difficulty as your body gets more horizontal."
+  },
+  "Standing Quad Stretch": {
+    steps: ["Stand on left leg, hold chair for balance", "Bend right knee, bring heel toward glute", "Hold ankle with right hand", "Stand tall, hips forward, hold 25 seconds"],
+    muscles: ["Rectus femoris", "Vastus lateralis"],
+    tip: "Pull the knee back slightly, not just up, for a deeper hip flexor stretch too."
+  },
+  "Hamstring Stretch": {
+    steps: ["Stand, extend right leg on a chair or step", "Flex your foot, toes pointing up", "Hinge forward at the hips until you feel a pull", "Hold 25–30 seconds each leg"],
+    muscles: ["Hamstrings", "Calves", "Lower back"],
+    tip: "This undoes hours of sitting-induced hamstring shortening — do it daily."
+  },
+  "Overhead Tricep Stretch": {
+    steps: ["Raise right arm, bend elbow behind head", "Left hand gently presses elbow down", "Hold until you feel stretch in tricep", "20 seconds each side"],
+    muscles: ["Triceps brachii", "Posterior deltoid"],
+    tip: "Keep your core engaged — it's easy to over-arch your lower back here."
+  },
+  "Cross-Body Shoulder": {
+    steps: ["Bring right arm across your chest", "Left arm presses it closer to your body", "Keep arm straight at shoulder height", "Hold 20 seconds each side"],
+    muscles: ["Posterior deltoid", "Rhomboids", "Rotator cuff"],
+    tip: "Don't hunch — keep both shoulders level throughout the stretch."
+  },
+  "Neck Isometrics": {
+    steps: ["Sit tall, place right hand on right temple", "Press head into hand — resist with hand", "No movement — just 5 seconds of tension", "Repeat on left side, front, and back"],
+    muscles: ["Neck stabilisers", "Deep cervical flexors"],
+    tip: "These strengthen the neck for screen work and prevent headaches."
+  },
+  "Seated Pigeon Pose": {
+    steps: ["Sit upright, cross right ankle over left knee", "Flex right foot to protect the knee", "Gently press right knee toward floor", "Hold 30 seconds, feeling the outer hip"],
+    muscles: ["Piriformis", "Glutes", "IT band", "Hip external rotators"],
+    tip: "The further forward you hinge, the deeper the stretch."
+  },
+};
 
 const INTENSITIES = { low: "Gentle", med: "Moderate", high: "Intense" };
 
@@ -930,16 +1288,19 @@ function renderExercises() {
     card.className = 'exercise-card';
     card.style.animationDelay = `${i * 0.06}s`;
     card.onclick = () => toggleDone(card);
+    const hasAnim = EXERCISE_ANIMS && EXERCISE_ANIMS[ex.name];
     card.innerHTML = `
       <div class="card-icon">${ex.icon}</div>
       <div class="card-body">
         <div class="card-name">${ex.name}</div>
         <div class="card-detail">${ex.detail}</div>
         <div class="card-intensity intensity-${ex.intensity}">${INTENSITIES[ex.intensity]}</div>
+        ${hasAnim ? `<button class="card-info-btn" onclick="openExerciseModal('${ex.name.replace(/'/g,"\'")}','${ex.icon}','${ex.intensity}',event)">▶ How to</button>` : ''}
       </div>`;
     grid.appendChild(card);
   });
 }
+
 
 function toggleDone(card) {
   card.classList.toggle('done');
@@ -1502,6 +1863,27 @@ function drawAmbient() {
     if (o.y > H + o.r) o.y = -o.r;
   });
   requestAnimationFrame(drawAmbient);
+}
+
+
+// ═══════════════════════════════════════════
+//  EXERCISE DETAIL MODAL
+// ═══════════════════════════════════════════
+function openExerciseModal(name, icon, intensity, event) {
+  if (event) event.stopPropagation();
+  const data = EXERCISE_ANIMS[name];
+  if (!data) return;
+  document.getElementById('ex-modal-icon').textContent = icon;
+  document.getElementById('ex-modal-title').textContent = name;
+  const iEl = document.getElementById('ex-modal-intensity');
+  iEl.textContent = { low: 'Gentle', med: 'Moderate', high: 'Intense' }[intensity] || '';
+  iEl.className = 'ex-modal-intensity intensity-' + intensity;
+  document.getElementById('ex-steps').innerHTML = data.steps.map((s, i) =>
+    `<div class="ex-step"><div class="ex-step-num">${i+1}</div><div>${s}</div></div>`).join('');
+  document.getElementById('ex-muscles').innerHTML = data.muscles.map(m =>
+    `<div class="ex-muscle-tag">${m}</div>`).join('');
+  document.getElementById('ex-tip-text').textContent = data.tip;
+  document.getElementById('ex-modal').classList.add('show');
 }
 
 // ═══════════════════════════════════════════
