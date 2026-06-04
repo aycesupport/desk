@@ -200,7 +200,10 @@
   .alert-sub { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
   .alert-quote { font-size: 13px; font-style: italic; color: var(--text); opacity: 0.8; margin-bottom: 20px; line-height: 1.5; padding: 0 8px; }
   .alert-exercises { text-align: left; margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; }
-  .alert-ex-item { display: flex; align-items: center; gap: 10px; background: var(--surface2); border-radius: 8px; padding: 10px 14px; font-size: 13px; font-weight: 600; }
+  .alert-ex-item { display: flex; align-items: center; gap: 10px; background: var(--surface2); border-radius: 8px; padding: 10px 14px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.15s; justify-content: space-between; }
+  .alert-ex-item:hover { background: var(--border); }
+  .alert-ex-item-left { display: flex; align-items: center; gap: 10px; }
+  .alert-how-btn { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: var(--accent2); border: 1px solid rgba(96,200,240,0.3); border-radius: 4px; padding: 2px 7px; background: none; cursor: pointer; white-space: nowrap; text-transform: uppercase; }
   .alert-ex-item span:first-child { font-size: 20px; }
   .alert-dismiss-msg { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent); margin-bottom: 14px; letter-spacing: 0.05em; min-height: 18px; }
 
@@ -349,6 +352,11 @@
   .ambient-tap  { position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%); font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: rgba(255,255,255,0.2); text-transform: uppercase; }
   .ambient-intention { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: rgba(255,255,255,0.3); margin-top: 20px; text-transform: uppercase; }
 
+
+  /* ── MUTE TOGGLE ── */
+  .mute-btn { position: fixed; bottom: 20px; right: 20px; z-index: 50; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.08em; background: var(--surface2); color: var(--muted); border: 1px solid var(--border); border-radius: 20px; padding: 7px 14px; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 6px; }
+  .mute-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .mute-btn.muted { color: var(--accent3); border-color: rgba(240,96,168,0.4); }
 </style>
 </head>
 <body>
@@ -442,11 +450,11 @@
   <div class="overlay-box">
     <div class="alert-icon">🏃</div>
     <div class="alert-title">Exercise Break!</div>
-    <div class="alert-sub">Time to move — your body will thank you</div>
+    <div class="alert-sub">Tap any exercise to see how to do it</div>
     <div class="alert-quote" id="alert-quote"></div>
     <div class="alert-exercises" id="alert-exercises"></div>
     <div class="alert-dismiss-msg" id="alert-dismiss-msg"></div>
-    <button class="btn btn-primary" style="width:100%" onclick="dismissAlert()">Let's Go!</button>
+    <button class="btn btn-primary" style="width:100%;margin-top:4px" onclick="dismissAlert()">Start Exercises ✓</button>
   </div>
 </div>
 
@@ -1237,6 +1245,7 @@ function toggleTimer() {
     intervalId = setInterval(() => {
       remaining--;
       updateDisplay();
+      if (remaining === 300) soundWarning();
       if (remaining <= 0) {
         clearInterval(intervalId);
         running = false;
@@ -1306,6 +1315,7 @@ function toggleDone(card) {
   card.classList.toggle('done');
   completedCount = document.querySelectorAll('.exercise-card.done').length;
   updateProgress();
+  soundTick();
   if (completedCount === currentExercises.length) {
     totalExercises += currentExercises.length;
     totalSessions++;
@@ -1313,6 +1323,7 @@ function toggleDone(card) {
     buildStreak();
     saveState();
     launchConfetti();
+    soundComplete();
     showToast(DISMISS_MSGS[Math.floor(Math.random() * DISMISS_MSGS.length)]);
   }
 }
@@ -1334,18 +1345,27 @@ function shuffleExercises() {
 function triggerBreak() {
   document.getElementById('timer-status').textContent = 'break!';
   const breakExs = pickExercises(3);
+  // Store so How To modal can reference them
+  window._breakExs = breakExs;
   const list = document.getElementById('alert-exercises');
   list.innerHTML = '';
   breakExs.forEach(ex => {
     const item = document.createElement('div');
     item.className = 'alert-ex-item';
-    item.innerHTML = `<span>${ex.icon}</span><span>${ex.name} — ${ex.detail}</span>`;
+    const hasInfo = EXERCISE_ANIMS && EXERCISE_ANIMS[ex.name];
+    item.innerHTML = `
+      <div class="alert-ex-item-left">
+        <span>${ex.icon}</span>
+        <span>${ex.name} — ${ex.detail}</span>
+      </div>
+      ${hasInfo ? `<button class="alert-how-btn" onclick="openExerciseModal('${ex.name.replace(/'/g,"\'")}','${ex.icon}','${ex.intensity}',event)">▶ How To</button>` : ''}`;
     list.appendChild(item);
   });
   const q = nextQuote();
   document.getElementById('alert-quote').textContent = `"${q.text}" — ${q.author}`;
   document.getElementById('alert-dismiss-msg').textContent = '';
   document.getElementById('alert-overlay').classList.add('show');
+  soundBreakChime();
 
   if (Notification.permission === 'granted') {
     new Notification('Exercise Break! 🏃', {
@@ -1353,6 +1373,7 @@ function triggerBreak() {
     });
   }
 }
+
 
 function dismissAlert() {
   const msgs = DISMISS_MSGS;
@@ -1886,6 +1907,92 @@ function openExerciseModal(name, icon, intensity, event) {
   document.getElementById('ex-modal').classList.add('show');
 }
 
+
+// ═══════════════════════════════════════════
+//  SOUND SYSTEM — Web Audio API
+// ═══════════════════════════════════════════
+let audioCtx = null;
+let soundMuted = false;
+
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+
+function toggleMute() {
+  soundMuted = !soundMuted;
+  const btn = document.getElementById('mute-btn');
+  btn.textContent = soundMuted ? '🔇 Muted' : '🔔 Sound';
+  btn.classList.toggle('muted', soundMuted);
+}
+
+// Core tone generator
+function playTone(freq, startTime, duration, gain = 0.4, type = 'sine', fadeOut = true) {
+  if (soundMuted) return;
+  const ctx = getAudioCtx();
+  const osc = ctx.createOscillator();
+  const gainNode = ctx.createGain();
+  osc.connect(gainNode);
+  gainNode.connect(ctx.destination);
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, startTime);
+  gainNode.gain.setValueAtTime(0, startTime);
+  gainNode.gain.linearRampToValueAtTime(gain, startTime + 0.01);
+  if (fadeOut) {
+    gainNode.gain.setValueAtTime(gain, startTime + duration - 0.1);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+  }
+  osc.start(startTime);
+  osc.stop(startTime + duration);
+}
+
+// Warm bell chime — plays on break time
+function soundBreakChime() {
+  if (soundMuted) return;
+  const ctx = getAudioCtx();
+  const now = ctx.currentTime;
+  // Three descending bell tones with harmonics
+  playTone(880, now,        1.8, 0.35, 'sine');
+  playTone(1760, now,       1.4, 0.15, 'sine');  // harmonic
+  playTone(659, now + 0.5,  1.6, 0.30, 'sine');
+  playTone(1318, now + 0.5, 1.2, 0.12, 'sine');
+  playTone(523, now + 1.0,  2.0, 0.25, 'sine');
+  playTone(1046, now + 1.0, 1.8, 0.10, 'sine');
+}
+
+// Soft tick — exercise marked done
+function soundTick() {
+  if (soundMuted) return;
+  const ctx = getAudioCtx();
+  const now = ctx.currentTime;
+  playTone(1200, now, 0.08, 0.18, 'sine');
+  playTone(1600, now + 0.06, 0.06, 0.10, 'sine');
+}
+
+// Ascending 3-note — all exercises complete
+function soundComplete() {
+  if (soundMuted) return;
+  const ctx = getAudioCtx();
+  const now = ctx.currentTime;
+  playTone(523, now,        0.3, 0.3, 'sine');
+  playTone(659, now + 0.25, 0.3, 0.3, 'sine');
+  playTone(784, now + 0.5,  0.5, 0.35, 'sine');
+  playTone(1046, now + 0.75, 0.8, 0.25, 'sine');
+}
+
+// Double pulse — 5-minute warning
+function soundWarning() {
+  if (soundMuted) return;
+  const ctx = getAudioCtx();
+  const now = ctx.currentTime;
+  playTone(660, now,       0.15, 0.2, 'sine');
+  playTone(660, now + 0.2, 0.15, 0.2, 'sine');
+}
+
+// Unlock audio on first interaction (browser autoplay policy)
+document.addEventListener('click', () => { if (!audioCtx) getAudioCtx(); }, { once: true });
+
 // ═══════════════════════════════════════════
 //  PWA INSTALL PROMPT
 // ═══════════════════════════════════════════
@@ -1943,5 +2050,6 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:') {
 }
 
 </script>
+<button class="mute-btn" id="mute-btn" onclick="toggleMute()" title="Toggle sounds">🔔 Sound</button>
 </body>
 </html>
